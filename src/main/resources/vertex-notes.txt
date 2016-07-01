@@ -1,0 +1,19 @@
+1. Create Project (General | Software)
+2. Add people to project
+3. Create task (or subtask)
+4. Assign someone (yourself) to task
+5. Comment task
+6. Complete task 
+
+Task lifecycles: new, accepted, in progress, blocked; done, old (not accepted but created a long time ago);
+Tasks have description, comments, involved parties; creation date; age;
+Involvement in tasks (for users not part of a project) - can only be created by someone in the project working
+on a task; should be accepted; appears as a user task;
+
+Roles in regards to a project:
+- project admin
+- project member
+- nonmember
+
+User profile: includes average time for task completion!; picture; projects involved; tasks completed; description (title);
+last activity (details depend on task / project privacy setting); 
