@@ -1,0 +1,4 @@
+com\fmi\javaee\vertex\user\Gender.class
+com\fmi\javaee\vertex\user\UserService.class
+com\fmi\javaee\vertex\JacksonFeature.class
+com\fmi\javaee\vertex\user\UserBean.class
