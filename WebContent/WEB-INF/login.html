@@ -26,8 +26,8 @@
             <!-- Login -->
             <form class="box tile animated active" id="box-login">
                 <h2 class="m-t-0 m-b-15">Login</h2>
-                <input type="text" class="login-control m-b-10" placeholder="Username or Email Address">
-                <input type="password" class="login-control" placeholder="Password">
+                <input type="text" class="login-control m-b-10 validate[required,minSize[6]]" placeholder="Username or Email Address">
+                <input type="password" class="login-control validate[required,minSize[6]]" placeholder="Password">
                 <div class="checkbox m-b-20">
                     <label>
                         <input type="checkbox">
@@ -76,6 +76,8 @@
         <script src="js/bootstrap.min.js"></script>
         
         <!--  Form Related -->
+        <script src="js/validation/validate.min.js"></script> <!-- jQuery Form Validation Library -->
+        <script src="js/validation/validationEngine.min.js"></script> <!-- jQuery Form Validation Library - requirred with above js -->
         <script src="js/icheck.js"></script> <!-- Custom Checkbox + Radio -->
         
         <!-- All JS functions -->
