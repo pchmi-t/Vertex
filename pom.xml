@@ -1,17 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>bg.fmi.javaee.vertex</groupId>
-	<artifactId>bg.fmi.javaee.vertex</artifactId>
+	<groupId>vertex</groupId>
+	<artifactId>vertex</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>Vertex</name>
-	<description>a project management tool</description>
 	<build>
-		<outputDirectory>target/classes</outputDirectory>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/main/test</testSourceDirectory>
-		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -26,7 +21,7 @@
 				<version>2.6</version>
 				<configuration>
 					<warSourceDirectory>WebContent</warSourceDirectory>
-					<warName>vertex</warName>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
 		</plugins>

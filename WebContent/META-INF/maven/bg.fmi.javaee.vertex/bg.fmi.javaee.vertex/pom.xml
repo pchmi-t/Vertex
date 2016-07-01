@@ -8,10 +8,7 @@
 	<name>Vertex</name>
 	<description>a project management tool</description>
 	<build>
-		<outputDirectory>target/classes</outputDirectory>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/main/test</testSourceDirectory>
-		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
