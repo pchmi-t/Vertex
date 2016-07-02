@@ -35,26 +35,77 @@ public class UserDataImpl implements UserData {
 
 	@Override
 	public UserBean getUser(String email, String password) {
-		// TODO Auto-generated method stub
-		return null;
+		Session session = SessionFactoryData.getSessionFactory().openSession();
+		try {
+			@SuppressWarnings("deprecation")
+			Criteria criteria = session.createCriteria(UserBean.class);
+			criteria
+			.add(Restrictions.eq("email", email))
+			.add(Restrictions.eq("password", password));
+			UserBean users = (UserBean) criteria.uniqueResult();
+			if ( users != null) {
+				return users;
+			} else {
+				return null;
+			}
+		} finally {
+			SessionFactoryData.closeSession(session);
+		}
 	}
 
 	@Override
-	public UserBean getUsers(int limit, Integer offset) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<UserBean> getUsers(int limit, Integer offset) {
+		Session session = SessionFactoryData.getSessionFactory().openSession();
+		try {
+			@SuppressWarnings("deprecation")
+			Criteria criteria = session.createCriteria(UserBean.class);
+			criteria.setMaxResults(limit).setFirstResult(offset);
+			@SuppressWarnings("unchecked")
+			List<UserBean> users = criteria.list();
+			if ( users != null) {
+				return users;
+			} else {
+				return null;
+			}
+		} finally {
+			SessionFactoryData.closeSession(session);
+		}
 	}
 
 	@Override
 	public UserBean getUsersByJobTitle(String jobTitle) {
-		// TODO Auto-generated method stub
-		return null;
+		Session session = SessionFactoryData.getSessionFactory().openSession();
+		try {
+			@SuppressWarnings("deprecation")
+			Criteria criteria = session.createCriteria(UserBean.class);
+			criteria.add(Restrictions.eq("jobTitle", jobTitle));
+			UserBean users = (UserBean) criteria.uniqueResult();
+			if ( users != null) {
+				return users;
+			} else {
+				return null;
+			}
+		} finally {
+			SessionFactoryData.closeSession(session);
+		}
 	}
 
 	@Override
 	public UserBean getUsersByGender(Gender gender) {
-		// TODO Auto-generated method stub
-		return null;
+		Session session = SessionFactoryData.getSessionFactory().openSession();
+		try {
+			@SuppressWarnings("deprecation")
+			Criteria criteria = session.createCriteria(UserBean.class);
+			criteria.add(Restrictions.eq("gender", gender));
+			UserBean users = (UserBean) criteria.uniqueResult();
+			if ( users != null) {
+				return users;
+			} else {
+				return null;
+			}
+		} finally {
+			SessionFactoryData.closeSession(session);
+		}
 	}
 
 	@Override

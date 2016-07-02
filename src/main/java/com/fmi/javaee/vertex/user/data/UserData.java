@@ -1,5 +1,7 @@
 package com.fmi.javaee.vertex.user.data;
 
+import java.util.List;
+
 import com.fmi.javaee.vertex.user.Gender;
 import com.fmi.javaee.vertex.user.UserBean;
 
@@ -8,7 +10,7 @@ public interface UserData {
 	
 	UserBean getUser(String email, String password);
 	
-	UserBean getUsers(int limit, Integer offset);
+	List<UserBean> getUsers(int limit, Integer offset);
 	
 	UserBean getUsersByJobTitle(String jobTitle);
 	
