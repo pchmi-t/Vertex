@@ -6,6 +6,8 @@ import java.time.Duration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -150,9 +152,8 @@ public class UserBean implements Serializable {
 
 	@Transient
 	@Column(name="gender")
-//	@Pattern(regexp="MALE | FEMALE", 
-//	message="The gender is eather MALE or FEMALE.")
 	@JsonProperty
+	@Enumerated(EnumType.STRING)
 	public Gender getGender() {
 		return gender;
 	}

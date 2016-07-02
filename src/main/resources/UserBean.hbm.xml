@@ -6,7 +6,7 @@
 <hibernate-mapping>
    <class name="UserBean" table="Users">
       <meta attribute="class-description">
-         This class contains the employee detail. 
+         This class contains the users detail. 
       </meta>
       <id name="userId" type="long" column="id">
          <generator class="native"/>
