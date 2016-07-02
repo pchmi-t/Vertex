@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+   <class name="UserBean" table="Users">
+      <meta attribute="class-description">
+         This class contains the employee detail. 
+      </meta>
+      <id name="userId" type="long" column="id">
+         <generator class="native"/>
+      </id>
+      <property name="jobTitle" column="jobTitle" type="string"/>
+      <property name="name" column="name" type="string"/>
+      <property name="gender" column="gender" type="string"/>
+      <property name="password" column="password" type="string"/>
+   	  <property name="email" column="email" type="string"/>
+   	  <property name="isGod" column="isGod" type="boolean"/>
+   </class>
+</hibernate-mapping>
