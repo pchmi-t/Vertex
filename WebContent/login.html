@@ -25,11 +25,12 @@
 		<div class="clearfix"></div>
 
 		<!-- Login -->
-		<form class="box tile animated active" id="box-login">
+		<form class="box tile animated active" id="box-login" action="j_securitycheck" method="POST">
 			<h2 class="m-t-0 m-b-15">Login</h2>
-			<input type="text"
+			<input type="text" name="j_username"
 				class="login-control m-b-10 validate[required,minSize[6]]"
-				placeholder="Username or Email Address"> <input
+				placeholder="Username or Email Address">
+				<input name="j_password"
 				type="password" class="login-control validate[required,minSize[6]]"
 				placeholder="Password">
 			<div class="checkbox m-b-20">
