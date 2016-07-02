@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.fmi.javaee.vertex.factory.Factory;
-import com.fmi.javaee.vertex.user.data.UserCriterion;
 import com.fmi.javaee.vertex.user.data.UserData;
 
 @Path("user")
@@ -25,9 +24,7 @@ public class UserService {
 	public Response getUser(@PathParam("userId") Long userId) {
 		UserBean user = new UserBean();
 		UserData userData = Factory.getInstance().getUserData();
-		UserCriterion criterion = userData.getUserCriterion();
-		criterion.id(userId);
-		user = userData.getUser(criterion);
+		user = userData.getUser(userId);
 		return Response.ok(user).build();
 	}
 	

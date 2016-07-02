@@ -8,10 +8,6 @@ public interface UserData {
 	
 	UserBean getUser(String email, String password);
 	
-	UserBean getUser(UserCriterion criterion);
-	
-	UserCriterion getUserCriterion();
-	
 	UserBean getUsers(int limit, Integer offset);
 	
 	UserBean getUsersByJobTitle(String jobTitle);
