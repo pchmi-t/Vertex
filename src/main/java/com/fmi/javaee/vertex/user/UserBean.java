@@ -3,7 +3,6 @@ package com.fmi.javaee.vertex.user;
 import java.beans.Transient;
 import java.io.Serializable;
 import java.time.Duration;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,9 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
-
+import org.hibernate.annotations.Parameter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Table(name="Users")
@@ -25,7 +25,7 @@ public class UserBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	//Persisted properties
-	private Long userId;
+	private String userId;
 	private String jobTitle;
 	private String name;
 	private Gender gender;
@@ -74,13 +74,14 @@ public class UserBean implements Serializable {
 	}
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
 	@JsonProperty
-	public Long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

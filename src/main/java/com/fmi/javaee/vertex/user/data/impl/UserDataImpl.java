@@ -16,7 +16,7 @@ import com.fmi.javaee.vertex.user.data.UserData;
 public class UserDataImpl implements UserData {
 
 	@Override
-	public UserBean getUser(Long id) {
+	public UserBean getUser(String id) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
 			@SuppressWarnings("deprecation")

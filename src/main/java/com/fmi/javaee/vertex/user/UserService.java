@@ -21,7 +21,7 @@ public class UserService {
 	
 	@GET
 	@Path("/{userId}")
-	public Response getUser(@PathParam("userId") Long userId) {
+	public Response getUser(@PathParam("userId") String userId) {
 		UserBean user = new UserBean();
 		UserData userData = Factory.getInstance().getUserData();
 		user = userData.getUser(userId);

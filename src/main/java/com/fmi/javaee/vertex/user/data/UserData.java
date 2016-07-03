@@ -6,7 +6,7 @@ import com.fmi.javaee.vertex.user.Gender;
 import com.fmi.javaee.vertex.user.UserBean;
 
 public interface UserData {
-	UserBean getUser(Long id);
+	UserBean getUser(String id);
 	
 	UserBean getUser(String email, String password);
 	
