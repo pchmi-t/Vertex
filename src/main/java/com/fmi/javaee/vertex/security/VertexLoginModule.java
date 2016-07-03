@@ -32,7 +32,7 @@ public class VertexLoginModule implements LoginModule {
 	private Subject subject;
 	private UserPrincipal userPrincipal;
 	private Set<RolePrincipal> userRoles;
- 
+
 	@Override
 	public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState,
 			Map<String, ?> options) {
@@ -53,6 +53,7 @@ public class VertexLoginModule implements LoginModule {
 			char[] password = passwordCallback.getPassword();
 			if (checkCredentials(username, password)) {
 				this.userPrincipal = new UserPrincipal(username);
+				this.userRoles.add(new RolePrincipal("VertexUser"));
 				return true;
 			}
 			throw new LoginException("Authentication failed");

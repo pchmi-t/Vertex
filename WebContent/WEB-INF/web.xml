@@ -8,18 +8,12 @@
 	<servlet>
 		<servlet-name>javax.ws.rs.core.Application</servlet-name>
 	</servlet>
-	<servlet>
-		<servlet-name>Vertex Login Servlet</servlet-name>
-		<servlet-class>com.fmi.javaee.vertex.security.LoginServlet</servlet-class>
-	</servlet>
 	<servlet-mapping>
 		<servlet-name>javax.ws.rs.core.Application</servlet-name>
 		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>Vertex Login Servlet</servlet-name>
-		<url-pattern>/j_securitycheck</url-pattern>
-	</servlet-mapping>
+
+	
 	<security-constraint>
 		<display-name>SecurityConstraint</display-name>
 		<web-resource-collection>
@@ -30,14 +24,16 @@
 			<role-name>VertexUser</role-name>
 		</auth-constraint>
 	</security-constraint>
+	
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Vertex Public</web-resource-name>
 			<url-pattern>/login.html</url-pattern>
 			<url-pattern>/resources/*</url-pattern>
-			<url-pattern>/j_securitycheck</url-pattern>
+			<url-pattern>/j_security_check</url-pattern>
 		</web-resource-collection>
 	</security-constraint>
+	
 	<login-config>
 		<auth-method>FORM</auth-method>
 		<form-login-config>
