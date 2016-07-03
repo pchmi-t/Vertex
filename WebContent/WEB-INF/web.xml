@@ -30,6 +30,7 @@
 			<web-resource-name>Vertex Public</web-resource-name>
 			<url-pattern>/login.html</url-pattern>
 			<url-pattern>/resources/*</url-pattern>
+			<url-pattern>/api/register/*</url-pattern>
 			<url-pattern>/j_security_check</url-pattern>
 		</web-resource-collection>
 	</security-constraint>

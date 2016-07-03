@@ -17,15 +17,21 @@ import javax.security.auth.spi.LoginModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fmi.javaee.vertex.factory.Factory;
+import com.fmi.javaee.vertex.user.UserBean;
+import com.fmi.javaee.vertex.user.data.UserData;
+
 public class VertexLoginModule implements LoginModule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(VertexLoginModule.class);
 
-	private static final String USERNAME_CALLBACK_PROMPT = "username";
+	private static final String USER_OR_EMAIL_CALLBACK_PROMPT = "email";
 	private static final String PASSWORD_CALLBACK_PROMPT = "password";
 
+	private static final String VERTEX_USER_DEFAULT_ROLE = "VertexUser";
+
 	private CallbackHandler handler;
-	private NameCallback nameCallback;
+	private NameCallback emailCallback;
 	private PasswordCallback passwordCallback;
 	private Callback[] callbacks;
 
@@ -36,9 +42,9 @@ public class VertexLoginModule implements LoginModule {
 	@Override
 	public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState,
 			Map<String, ?> options) {
-		this.nameCallback = new NameCallback(USERNAME_CALLBACK_PROMPT);
+		this.emailCallback = new NameCallback(USER_OR_EMAIL_CALLBACK_PROMPT);
 		this.passwordCallback = new PasswordCallback(PASSWORD_CALLBACK_PROMPT, false);
-		this.callbacks = new Callback[] { nameCallback, passwordCallback };
+		this.callbacks = new Callback[] { emailCallback, passwordCallback };
 		this.userRoles = new HashSet<>();
 		this.handler = callbackHandler;
 		this.subject = subject;
@@ -49,11 +55,10 @@ public class VertexLoginModule implements LoginModule {
 		LOG.info("Will try to log user...");
 		try {
 			handler.handle(callbacks);
-			String username = nameCallback.getName();
+			String usernameOrEmail = emailCallback.getName();
 			char[] password = passwordCallback.getPassword();
-			if (checkCredentials(username, password)) {
-				this.userPrincipal = new UserPrincipal(username);
-				this.userRoles.add(new RolePrincipal("VertexUser"));
+
+			if (login(usernameOrEmail, password)) {
 				return true;
 			}
 			throw new LoginException("Authentication failed");
@@ -62,8 +67,15 @@ public class VertexLoginModule implements LoginModule {
 		}
 	}
 
-	private boolean checkCredentials(String username, char[] password) {
-		LOG.info("Checking the credentials of user [{}]", username);
+	private boolean login(String email, char[] password) {
+		LOG.info("Checking the credentials of user [{}]", email);
+		UserData userDAO = Factory.getInstance().getUserData();
+		UserBean user = userDAO.getUser(email, password);
+		if (user == null) {
+			return false;
+		}
+		this.userPrincipal = new UserPrincipal(user.getUsername());
+		this.userRoles.add(new RolePrincipal(VERTEX_USER_DEFAULT_ROLE));
 		return true;
 	}
 

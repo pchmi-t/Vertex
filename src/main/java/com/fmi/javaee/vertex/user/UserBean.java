@@ -22,8 +22,8 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.task.TaskBean;
 
-@Table(name="Users")
 @Entity
+@Table(name="Users")
 public class UserBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -31,9 +31,10 @@ public class UserBean implements Serializable {
 	//Persisted properties
 	private String userId;
 	private String jobTitle;
-	private String name;
+	private String username;
+	private String fullName;
 	private Gender gender;
-	private String password; //will served as passphrase
+	private String password;
 	private String email;
 	private Boolean isGod;
 	private Collection<TaskBean> assignedTasks;
@@ -57,9 +58,9 @@ public class UserBean implements Serializable {
 		this.password = password;
 	}
 
-	@Column(name="email", unique = true, nullable = false)
-	@JsonProperty
 	@Email
+	@JsonProperty
+	@Column(name="email", unique = true, nullable = false)
 	public String getEmail() {
 		return email;
 	}
@@ -146,15 +147,26 @@ public class UserBean implements Serializable {
 		this.taskInvolvementsCount = taskInvolvementsCount;
 	}
 
-	@Column(name="name")
-	@NotBlank(message="The username can not be blank.")
 	@JsonProperty
-	public String getName() {
-		return name;
+	@Column(unique=true, name="username")
+	@NotBlank(message="The username can not be blank.")
+	public String getUsername() {
+		return username;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUsername(String name) {
+		this.username = name;
+	}
+	
+	@JsonProperty
+	@Column(name="fullname")
+	@NotBlank(message="The username can not be blank.")
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String name) {
+		this.fullName = name;
 	}
 
 	@Column(name="gender")
