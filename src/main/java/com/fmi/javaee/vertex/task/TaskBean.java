@@ -55,6 +55,7 @@ public class TaskBean extends Observable {
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@JsonProperty
+	@Column(name="taskId", unique=true, nullable=false)
 	public String getTaskId() {
 		return taskId;
 	}

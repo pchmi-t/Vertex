@@ -40,8 +40,13 @@ public class TaskService {
 	}
 	
 	@PUT
-	public Response updateTask(TaskBean updatedTask) {
-		return null;
+	public Response updateOrUpdateTask(TaskBean task) {
+		TaskBean updatedTask = taskData.updateTask(task);
+		if (updatedTask != null) {
+			return Response.ok().entity(updatedTask).build();
+		} else {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
 	}
 	
 	@GET
