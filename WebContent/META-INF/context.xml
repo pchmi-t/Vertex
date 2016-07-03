@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context sessionCookiePath="/">
+	<WatchedResource>WEB-INF/web.xml</WatchedResource>
+	<WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+	<Realm className="org.apache.catalina.realm.JAASRealm" appName="VertexApplicationLogin"
+		userClassNames="com.fmi.javaee.vertex.security.UserPrincipal" 
+		roleClassNames="com.fmi.javaee.vertex.security.RolePrincipal"
+		configFile="jaas.config"/>
+</Context>
