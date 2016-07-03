@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.util.Collection;
 
+import javax.enterprise.inject.Default;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
@@ -71,6 +73,7 @@ public class UserBean implements Serializable {
 
 	@Column(name="isGod")
 	@JsonProperty
+	@ColumnDefault("false")
 	public Boolean getIsGod() {
 		return isGod;
 	}

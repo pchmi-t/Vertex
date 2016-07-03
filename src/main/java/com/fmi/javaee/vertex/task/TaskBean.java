@@ -1,5 +1,6 @@
 package com.fmi.javaee.vertex.task;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Observable;
 
@@ -17,18 +18,18 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.task.monitoring.Component;
 import com.fmi.javaee.vertex.user.UserBean;
 
 @Table(name="tasks")
 @Entity
-public class TaskBean extends Observable {
+public class TaskBean extends Observable implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	//Persisted properties
 	private String taskId;
