@@ -3,20 +3,24 @@ package com.fmi.javaee.vertex.user;
 import java.beans.Transient;
 import java.io.Serializable;
 import java.time.Duration;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.annotations.Parameter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fmi.javaee.vertex.task.TaskBean;
 
 @Table(name="Users")
 @Entity
@@ -32,6 +36,7 @@ public class UserBean implements Serializable {
 	private String password; //will served as passphrase
 	private String email;
 	private Boolean isGod;
+	private Collection<TaskBean> assignedTasks;
 	//TODO implement certRef
 	
 	private Duration averageTaskEcecutionTime;
@@ -151,7 +156,6 @@ public class UserBean implements Serializable {
 		this.name = name;
 	}
 
-	@Transient
 	@Column(name="gender")
 	@JsonProperty
 	@Enumerated(EnumType.STRING)
@@ -163,4 +167,14 @@ public class UserBean implements Serializable {
 		this.gender = gender;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	public Collection<TaskBean> getAssignedTasks() {
+		return assignedTasks;
+	}
+
+	public void setAssignedTasks(Collection<TaskBean> assignedTasks) {
+		this.assignedTasks = assignedTasks;
+	}
+
+	
 }

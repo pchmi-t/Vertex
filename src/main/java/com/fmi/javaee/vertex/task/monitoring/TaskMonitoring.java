@@ -3,15 +3,15 @@ package com.fmi.javaee.vertex.task.monitoring;
 import java.util.Observable;
 import java.util.Observer;
 
-import com.fmi.javaee.vertex.task.Task;
+import com.fmi.javaee.vertex.task.TaskBean;
 
 public class TaskMonitoring implements Observer {
 
-	private Task changedTask;
+	private TaskBean changedTask;
 
 	@Override
 	public void update(Observable o, Object component) {
-		changedTask = (Task) o;
+		changedTask = (TaskBean) o;
 		Component componentChanged = (Component) component;
 		switch (componentChanged) {
 		case STATUS:
