@@ -1,7 +1,9 @@
 package com.fmi.javaee.vertex.security;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -25,19 +27,21 @@ public class VertexLoginModule implements LoginModule {
 	private CallbackHandler handler;
 	private NameCallback nameCallback;
 	private PasswordCallback passwordCallback;
-	private VertexUserPrincipal userPrincipal;
 	private Callback[] callbacks;
-	private Subject subject;
 
+	private Subject subject;
+	private UserPrincipal userPrincipal;
+	private Set<RolePrincipal> userRoles;
+ 
 	@Override
 	public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState,
 			Map<String, ?> options) {
 		this.nameCallback = new NameCallback(USERNAME_CALLBACK_PROMPT);
 		this.passwordCallback = new PasswordCallback(PASSWORD_CALLBACK_PROMPT, false);
 		this.callbacks = new Callback[] { nameCallback, passwordCallback };
+		this.userRoles = new HashSet<>();
 		this.handler = callbackHandler;
 		this.subject = subject;
-
 	}
 
 	@Override
@@ -48,7 +52,7 @@ public class VertexLoginModule implements LoginModule {
 			String username = nameCallback.getName();
 			char[] password = passwordCallback.getPassword();
 			if (checkCredentials(username, password)) {
-				this.userPrincipal = new VertexUserPrincipal(username);
+				this.userPrincipal = new UserPrincipal(username);
 				return true;
 			}
 			throw new LoginException("Authentication failed");
@@ -65,6 +69,9 @@ public class VertexLoginModule implements LoginModule {
 	@Override
 	public boolean commit() throws LoginException {
 		subject.getPrincipals().add(userPrincipal);
+		for (RolePrincipal role : userRoles) {
+			subject.getPrincipals().add(role);
+		}
 		return true;
 	}
 
@@ -76,6 +83,9 @@ public class VertexLoginModule implements LoginModule {
 	@Override
 	public boolean logout() throws LoginException {
 		subject.getPrincipals().remove(userPrincipal);
+		for (RolePrincipal role : userRoles) {
+			subject.getPrincipals().remove(role);
+		}
 		return true;
 	}
 
