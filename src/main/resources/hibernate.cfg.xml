@@ -11,11 +11,11 @@
         <property name="hibernate.connection.password">SECRET123</property>
         <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/vertexdb</property>
         <property name="connection_pool_size">10</property>
-        <property name="hbm2ddl.auto">create</property>
+        <property name="hbm2ddl.auto">update</property>
         <property name="show_sql">true</property>
         
         <!-- Bellow is all the mapped beans -->
         <mapping class="com.fmi.javaee.vertex.user.UserBean" />
-
+		<mapping class="com.fmi.javaee.vertex.task.TaskBean" />
     </session-factory>
 </hibernate-configuration>
