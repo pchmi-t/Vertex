@@ -1,5 +1,6 @@
 package com.fmi.javaee.vertex.task;
 
+import java.util.Date;
 import java.util.Observable;
 
 import javax.persistence.CascadeType;
@@ -14,9 +15,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.task.monitoring.Component;
 import com.fmi.javaee.vertex.user.UserBean;
@@ -25,11 +30,12 @@ import com.fmi.javaee.vertex.user.UserBean;
 @Entity
 public class TaskBean extends Observable {
 
+	//Persisted properties
 	private String taskId;
 
-	private Long creationTime;
+	private Date creationTime;
 
-	private Long modificationTime;
+	private Date modificationTime;
 
 	private Status status;
 
@@ -58,22 +64,24 @@ public class TaskBean extends Observable {
 	}
 
 	@Column(name="creationTime")
+	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty
-	public Long getCreationTime() {
+	public Date getCreationTime() {
 		return creationTime;
 	}
 
-	public void setCreationTime(Long currentDate) {
+	public void setCreationTime(Date currentDate) {
 		this.creationTime = currentDate;
 	}
 
 	@Column(name="modificationTime")
+	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty
-	public Long getModificationTime() {
+	public Date getModificationTime() {
 		return modificationTime;
 	}
 
-	public void setModificationTime(Long currentDate) {
+	public void setModificationTime(Date currentDate) {
 		this.modificationTime = currentDate;
 	}
 

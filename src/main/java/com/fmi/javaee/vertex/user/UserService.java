@@ -1,8 +1,6 @@
 package com.fmi.javaee.vertex.user;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,8 +15,9 @@ import com.fmi.javaee.vertex.user.data.UserData;
 
 @Path("user")
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class UserService {
-	
+
 	@GET
 	@Path("/{userId}")
 	public Response getUser(@PathParam("userId") String userId) {
@@ -27,7 +26,7 @@ public class UserService {
 		user = userData.getUser(userId);
 		return Response.ok(user).build();
 	}
-	
+
 	@POST
 	//TODO Add permissions
 	public Response createUser(UserBean user) {

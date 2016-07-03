@@ -57,7 +57,7 @@ public class UserBean implements Serializable {
 		this.password = password;
 	}
 
-	@Column(name="email")
+	@Column(name="email", unique = true, nullable = false)
 	@JsonProperty
 	@Email
 	public String getEmail() {
@@ -82,6 +82,7 @@ public class UserBean implements Serializable {
 	@GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
 	@JsonProperty
+	@Column(name="userId", unique = true, nullable = false)
 	public String getUserId() {
 		return userId;
 	}
@@ -167,7 +168,7 @@ public class UserBean implements Serializable {
 		this.gender = gender;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="asignee", cascade=CascadeType.ALL)
 	public Collection<TaskBean> getAssignedTasks() {
 		return assignedTasks;
 	}
