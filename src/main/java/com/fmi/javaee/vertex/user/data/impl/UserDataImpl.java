@@ -22,9 +22,9 @@ public class UserDataImpl implements UserData {
 			@SuppressWarnings("deprecation")
 			Criteria criteria = session.createCriteria(UserBean.class);
 			criteria.add(Restrictions.eq("userId", id));
-			UserBean users = (UserBean) criteria.uniqueResult();
-			if ( users != null) {
-				return users;
+			UserBean user = (UserBean) criteria.uniqueResult();
+			if ( user != null) {
+				return user;
 			} else {
 				return null;
 			}
@@ -34,14 +34,14 @@ public class UserDataImpl implements UserData {
 	}
 
 	@Override
-	public UserBean getUser(String email, String password) {
+	public UserBean getUser(String email, char[] password) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
 			@SuppressWarnings("deprecation")
 			Criteria criteria = session.createCriteria(UserBean.class);
 			criteria
 			.add(Restrictions.eq("email", email))
-			.add(Restrictions.eq("password", password));
+			.add(Restrictions.eq("password", String.valueOf(password)));
 			UserBean users = (UserBean) criteria.uniqueResult();
 			if ( users != null) {
 				return users;

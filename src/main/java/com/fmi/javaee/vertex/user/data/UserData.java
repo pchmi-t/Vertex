@@ -8,7 +8,7 @@ import com.fmi.javaee.vertex.user.UserBean;
 public interface UserData {
 	UserBean getUser(String id);
 	
-	UserBean getUser(String email, String password);
+	UserBean getUser(String email, char[] password);
 	
 	List<UserBean> getUsers(int limit, Integer offset);
 	

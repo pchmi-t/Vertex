@@ -131,9 +131,9 @@ public class TaskBean extends Observable {
 		this.creator = creator;
 	}
 
+	@JsonProperty
 	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="last_modificator_id")
-	@JsonProperty
 	public UserBean getLastModificator() {
 		return lastModificator;
 	}
@@ -142,9 +142,9 @@ public class TaskBean extends Observable {
 		this.lastModificator = lastModificator;
 	}
 
+	@JsonProperty
 	@Column(name="priority")
 	@Enumerated(EnumType.STRING)
-	@JsonProperty
 	public Priority getPriority() {
 		return priority;
 	}
