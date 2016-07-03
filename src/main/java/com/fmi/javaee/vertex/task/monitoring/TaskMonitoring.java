@@ -3,6 +3,8 @@ package com.fmi.javaee.vertex.task.monitoring;
 import java.util.Observable;
 import java.util.Observer;
 
+import com.fmi.javaee.vertex.event.compose.ComponentEvent;
+import com.fmi.javaee.vertex.event.compose.EventFactory;
 import com.fmi.javaee.vertex.task.TaskBean;
 
 public class TaskMonitoring implements Observer {
@@ -12,16 +14,26 @@ public class TaskMonitoring implements Observer {
 	@Override
 	public void update(Observable o, Object component) {
 		changedTask = (TaskBean) o;
-		Component componentChanged = (Component) component;
-		switch (componentChanged) {
-		case STATUS:
-			break;
-		case DEFINITION:
-			break;
-		case PRIORITY:
-			break;
-		default:
-			break;
+		if (changedTask.getTaskId() != null) {
+			Component componentChanged = (Component) component;
+			ComponentEvent event;
+			switch (componentChanged) {
+			case STATUS:
+				event = EventFactory.getInstance().getEventByComponent(Component.STATUS);
+				break;
+			case DEFINITION:
+				event = EventFactory.getInstance().getEventByComponent(Component.DEFINITION);
+				break;
+			case PRIORITY:
+				event = EventFactory.getInstance().getEventByComponent(Component.PRIORITY);
+				break;
+			case COMMENT:
+				event = EventFactory.getInstance().getEventByComponent(Component.COMMENT);
+				break;
+			default:
+				event = null;
+			}
+			event.composeEvent(changedTask);
 		}
 	}
 }

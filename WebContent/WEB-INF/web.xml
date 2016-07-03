@@ -45,4 +45,11 @@
 	<security-role>
 		<role-name>VertexUser</role-name>
 	</security-role>
+	
+	<!-- Listener for scheduler job for sending emails. -->
+<!-- 	<listener> -->
+<!--     	<listener-class> -->
+<!--        		com.fmi.javee.vertex.scheduler.SchedulerRunner -->
+<!--    		</listener-class> -->
+<!-- 	</listener> -->
 </web-app>

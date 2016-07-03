@@ -1,5 +1,7 @@
 package com.fmi.javaee.vertex.factory;
 
+import com.fmi.javaee.vertex.event.data.EventData;
+import com.fmi.javaee.vertex.event.data.impl.EventDataImpl;
 import com.fmi.javaee.vertex.task.data.TaskData;
 import com.fmi.javaee.vertex.task.data.impl.TaskDataImpl;
 import com.fmi.javaee.vertex.user.data.UserData;
@@ -20,5 +22,9 @@ public class Factory {
 	
 	public TaskData getTaskData() {
 		return new TaskDataImpl();
+	}
+	
+	public EventData getEventData() {
+		return new EventDataImpl();
 	}
 }

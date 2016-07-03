@@ -18,11 +18,14 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.task.monitoring.Component;
+import com.fmi.javaee.vertex.task.monitoring.TaskMonitoring;
 import com.fmi.javaee.vertex.user.UserBean;
 
 @Table(name="tasks")
@@ -50,7 +53,12 @@ public class TaskBean extends Observable implements Serializable {
 
 	private UserBean lastModificator;
 
+	private String title;
+
 	//private Project project;
+
+	@Transient
+	private boolean isObserverNotifyed = false;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
@@ -96,6 +104,7 @@ public class TaskBean extends Observable implements Serializable {
 
 	public void setStatus(Status status) {
 		this.status = status;
+		notifyObservers();
 		setChanged();
 		notifyObservers(Component.STATUS);
 	}
@@ -118,6 +127,7 @@ public class TaskBean extends Observable implements Serializable {
 
 	public void setDefinition(String definition) {
 		this.definition = definition;
+		notifyObservers();
 		setChanged();
 		notifyObservers(Component.DEFINITION);
 	}
@@ -153,8 +163,26 @@ public class TaskBean extends Observable implements Serializable {
 
 	public void setPriority(Priority priority) {
 		this.priority = priority;
+		notifyObserver();
 		setChanged();
 		notifyObservers(Component.PRIORITY);
 	}
+	
+	@Column(name="title", updatable=false)
+	@NotBlank(message="The task title can not be null or empty.")
+	@JsonProperty
+	public String getTitle() {
+		return title;
+	}
 
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	private void notifyObserver() {
+		if (!isObserverNotifyed) {
+			this.addObserver(new TaskMonitoring());
+			isObserverNotifyed = true;
+		}
+	}
 }

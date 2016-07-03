@@ -17,5 +17,6 @@
         <!-- Bellow is all the mapped beans -->
         <mapping class="com.fmi.javaee.vertex.user.UserBean" />
 		<mapping class="com.fmi.javaee.vertex.task.TaskBean" />
+		<mapping class="com.fmi.javaee.vertex.event.EventBean" />
     </session-factory>
 </hibernate-configuration>
