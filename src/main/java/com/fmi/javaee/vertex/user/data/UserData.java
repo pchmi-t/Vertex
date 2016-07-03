@@ -19,4 +19,6 @@ public interface UserData {
 	UserBean createUser(UserBean user);
 
 	UserBean getUserByEmail(String email);
+	
+	UserBean getUserByUsername(String username);
 }

@@ -146,4 +146,22 @@ public class UserDataImpl implements UserData {
 			SessionFactoryData.closeSession(session);
 		}
 	}
+
+	@Override
+	public UserBean getUserByUsername(String username) {
+		Session session = SessionFactoryData.getSessionFactory().openSession();
+		try {
+			@SuppressWarnings("deprecation")
+			Criteria criteria = session.createCriteria(UserBean.class);
+			criteria.add(Restrictions.eq("username", username));
+			UserBean users = (UserBean) criteria.uniqueResult();
+			if ( users != null) {
+				return users;
+			} else {
+				return null;
+			}
+		} finally {
+			SessionFactoryData.closeSession(session);
+		}
+	}
 }

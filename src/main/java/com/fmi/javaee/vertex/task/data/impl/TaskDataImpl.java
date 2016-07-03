@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.ReplicationMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
@@ -20,7 +21,7 @@ public class TaskDataImpl implements TaskData {
 	@Override
 	public TaskBean createTask(TaskBean task) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
-		
+
 		try {
 			//TODO Should validate the task
 			
@@ -39,8 +40,24 @@ public class TaskDataImpl implements TaskData {
 
 	@Override
 	public TaskBean updateTask(TaskBean task) {
-		// TODO Auto-generated method stub
-		return null;
+		Session session = SessionFactoryData.getSessionFactory().openSession();
+		try {
+			//TODO Should validate the task
+			
+			Transaction tx = session.beginTransaction();
+			if (task.getTaskId() == null) {
+				session.save(task);
+			} else {
+				session.replicate(task, ReplicationMode.OVERWRITE);
+			}
+			tx.commit();
+			return task;
+		} catch (HibernateException ex) {
+			final String errorMessage = "A database error occured while saving/updating the task.";
+			throw new RuntimeException(errorMessage, ex);
+		} finally {
+			SessionFactoryData.closeSession(session);
+		}
 	}
 
 	@Override
@@ -82,14 +99,39 @@ public class TaskDataImpl implements TaskData {
 
 	@Override
 	public List<TaskBean> getTasksByPriority(Priority priority) {
-		// TODO Auto-generated method stub
-		return null;
+		Session session = SessionFactoryData.getSessionFactory().openSession();
+		try {
+			@SuppressWarnings("deprecation")
+			Criteria criteria = session.createCriteria(TaskBean.class);
+			criteria.add(Restrictions.eq("priority", priority));
+			@SuppressWarnings("unchecked")
+			List<TaskBean> tasks = criteria.list();
+			if ( tasks != null) {
+				return tasks;
+			} else {
+				return null;
+			}
+		} finally {
+			SessionFactoryData.closeSession(session);
+		}
 	}
 
 	@Override
 	public List<TaskBean> getTasksByStatus(Status status) {
-		// TODO Auto-generated method stub
-		return null;
+		Session session = SessionFactoryData.getSessionFactory().openSession();
+		try {
+			@SuppressWarnings("deprecation")
+			Criteria criteria = session.createCriteria(TaskBean.class);
+			criteria.add(Restrictions.eq("status", status));
+			@SuppressWarnings("unchecked")
+			List<TaskBean> tasks = criteria.list();
+			if ( tasks != null) {
+				return tasks;
+			} else {
+				return null;
+			}
+		} finally {
+			SessionFactoryData.closeSession(session);
+		}
 	}
-
 }
