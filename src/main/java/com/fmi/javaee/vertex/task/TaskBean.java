@@ -2,7 +2,6 @@ package com.fmi.javaee.vertex.task;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Observable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,20 +17,17 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.project.ProjectEntity;
-import com.fmi.javaee.vertex.task.monitoring.Component;
-import com.fmi.javaee.vertex.task.monitoring.TaskMonitoring;
 import com.fmi.javaee.vertex.user.UserEntity;
 
 @Table(name = "tasks")
 @Entity
-public class TaskBean extends Observable implements Serializable {
+public class TaskBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -59,9 +55,6 @@ public class TaskBean extends Observable implements Serializable {
 	private ProjectEntity project;
 
 	// private Project project;
-
-	@Transient
-	private boolean isObserverNotifyed = false;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
@@ -107,9 +100,6 @@ public class TaskBean extends Observable implements Serializable {
 
 	public void setStatus(Status status) {
 		this.status = status;
-		notifyObservers();
-		setChanged();
-		notifyObservers(Component.STATUS);
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -130,9 +120,6 @@ public class TaskBean extends Observable implements Serializable {
 
 	public void setDefinition(String definition) {
 		this.definition = definition;
-		notifyObservers();
-		setChanged();
-		notifyObservers(Component.DEFINITION);
 	}
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -166,9 +153,6 @@ public class TaskBean extends Observable implements Serializable {
 
 	public void setPriority(Priority priority) {
 		this.priority = priority;
-		notifyObserver();
-		setChanged();
-		notifyObservers(Component.PRIORITY);
 	}
 
 	@Column(name = "title", updatable = false)
@@ -192,10 +176,5 @@ public class TaskBean extends Observable implements Serializable {
 		this.project = project;
 	}
 
-	private void notifyObserver() {
-		if (!isObserverNotifyed) {
-			this.addObserver(new TaskMonitoring());
-			isObserverNotifyed = true;
-		}
-	}
+
 }

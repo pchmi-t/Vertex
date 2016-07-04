@@ -31,7 +31,7 @@ public class StatusEvent implements ComponentEvent {
 		event.setEventComponent(component);
 		EventEntity newEvent = factory.getEventDAO().createEvent(event);
 		if (newEvent == null ){
-			LOG.equals("An error occured while creating event for component: " + component);
+			LOG.info("An error occured while creating event for component: " + component);
 		} else {
 			LOG.info(description);
 		}

@@ -33,7 +33,7 @@ public class CommentEvent implements ComponentEvent {
 		event.setRefUser(assignee);
 		EventEntity newEvent = factory.getEventDAO().createEvent(event);
 		if (newEvent == null ){
-			LOG.equals("An error occured while creating event for component: " + component);
+			LOG.info("An error occured while creating event for component: " + component);
 		} else {
 			LOG.info(description);
 		}
