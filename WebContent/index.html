@@ -45,9 +45,9 @@
 						src="/vertex/resources/img/profile-pics/male-user-icon.jpg" alt="">
 					</a>
 					<ul class="dropdown-menu profile-menu">
-						<li><a href="">My Profile</a> <i class="icon left">&#61903;</i><i
+						<li><a href="/vertex/tasks.html">My Tasks</a> <i class="icon left">&#61903;</i><i
 							class="icon right">&#61815;</i></li>
-						<li><a href="">Sign Out</a> <i class="icon left">&#61903;</i><i
+						<li><a href="/vertex/logout">Sign Out</a> <i class="icon left">&#61903;</i><i
 							class="icon right">&#61815;</i></li>
 					</ul>
 					<h4 id="userFullName" class="m-0"></h4>
@@ -95,14 +95,14 @@
 						<div class="tile-config dropdown">
 							<a data-toggle="dropdown" href="" class="tile-menu"></a>
 							<ul class="dropdown-menu pull-right text-right">
-								<li><a href="/vertex/start-project.html">Start New Project</a></li>
+								<li><a href="/vertex/start-project.html">Start a New Project</a></li>
 								<li><a href="">Refresh</a></li>
 							</ul>
 						</div>
-
 						<div class="listview narrow">
 						<div id="projectlist" class="media"></div>
 						</div>
+						<a href="/vertex/start-project.html" class="btn btn-sm btn-block">Start a New Project</a>
 					</div>
 					<div id="projectdetails" class="tile">
 					</div>
@@ -233,7 +233,7 @@
 		
 		if (isUserGod()) {
 			console.log(selectedProject.projectId);
-			detailsHtml += '<a href="/vertex/create-task.html?projectId="' + selectedProject.projectId + '><button class="btn btn-sm pull-right">Add Task</button></a>';
+			detailsHtml += '<a href="/vertex/create-task.html?projectId=' + selectedProject.projectId + '"><a href="/vertex/create-task.html" class="btn btn-sm btn-block">Create a New Task</a>';
 		}
 		$('#projectdetails').html(detailsHtml);
 	}

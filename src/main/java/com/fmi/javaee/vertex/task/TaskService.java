@@ -101,7 +101,7 @@ public class TaskService {
 		if (usersTasks != null && !usersTasks.isEmpty()) {
 			return Response.ok().entity(usersTasks).build();
 		} else {
-			return Response.ok().entity(new LinkedList<TaskBean>()).build();
+			return Response.status(Status.NOT_FOUND).build();
 		}
 	}
 	

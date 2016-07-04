@@ -13,6 +13,14 @@
 		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>Logout Servlet</servlet-name>
+		<servlet-class>com.fmi.javaee.vertex.security.LogoutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Logout Servlet</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
 
 	<security-constraint>
 		<display-name>SecurityConstraint</display-name>
