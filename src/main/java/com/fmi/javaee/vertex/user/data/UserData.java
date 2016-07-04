@@ -3,22 +3,22 @@ package com.fmi.javaee.vertex.user.data;
 import java.util.List;
 
 import com.fmi.javaee.vertex.user.Gender;
-import com.fmi.javaee.vertex.user.UserBean;
+import com.fmi.javaee.vertex.user.UserEntity;
 
 public interface UserData {
-	UserBean getUser(String id);
+	UserEntity getUser(String id);
 	
-	UserBean getUser(String email, char[] password);
+	UserEntity getUser(String email, char[] password);
 	
-	List<UserBean> getUsers(int limit, Integer offset);
+	List<UserEntity> getUsers(int limit, Integer offset);
 	
-	UserBean getUsersByJobTitle(String jobTitle);
+	UserEntity getUsersByJobTitle(String jobTitle);
 	
-	UserBean getUsersByGender(Gender gender);
+	UserEntity getUsersByGender(Gender gender);
 	
-	UserBean createUser(UserBean user);
+	UserEntity createUser(UserEntity user);
 
-	UserBean getUserByEmail(String email);
+	UserEntity getUserByEmail(String email);
 	
-	UserBean getUserByUsername(String username);
+	UserEntity getUserByUsername(String username);
 }

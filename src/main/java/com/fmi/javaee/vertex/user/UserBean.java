@@ -1,92 +1,28 @@
 package com.fmi.javaee.vertex.user;
 
-import java.beans.Transient;
-import java.io.Serializable;
-import java.time.Duration;
-import java.util.Collection;
+public class UserBean {
 
-import javax.enterprise.inject.Default;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fmi.javaee.vertex.task.TaskBean;
-
-@Entity
-@Table(name="Users")
-public class UserBean implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	
-	//Persisted properties
 	private String userId;
 	private String jobTitle;
 	private String username;
 	private String fullName;
 	private Gender gender;
-	private String password;
 	private String email;
 	private Boolean isGod;
-	private Collection<TaskBean> assignedTasks;
-	//TODO implement certRef
-	
-	private Duration averageTaskEcecutionTime;
 
-
-	private Duration averageInvolvementResponseTime;
-	private int projectsInvolvedCount;
-	private long tasksExecutedCount;
-	private long taskInvolvementsCount;
-	
-	@Column(name="password")
-	@Transient
-	public String getPassword() {
-		return password;
+	public UserBean(UserEntity entity) {
+		this.userId = entity.getUserId();
+		this.jobTitle = entity.getJobTitle();
+		this.username = entity.getUsername();
+		this.fullName = entity.getFullName();
+		this.gender = entity.getGender();
+		this.email = entity.getEmail();
+		this.isGod = entity.getIsGod();
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public UserBean() {
 	}
 
-	@Email
-	@JsonProperty
-	@Column(name="email", unique = true, nullable = false)
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	@Column(name="isGod")
-	@JsonProperty
-	@ColumnDefault("false")
-	public Boolean getIsGod() {
-		return isGod;
-	}
-
-	public void setIsGod(Boolean isGod) {
-		this.isGod = isGod;
-	}
-
-	@Id
-	@GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-	@JsonProperty
-	@Column(name="userId", unique = true, nullable = false)
 	public String getUserId() {
 		return userId;
 	}
@@ -95,8 +31,6 @@ public class UserBean implements Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name="jobTitle")
-	@JsonProperty
 	public String getJobTitle() {
 		return jobTitle;
 	}
@@ -105,76 +39,22 @@ public class UserBean implements Serializable {
 		this.jobTitle = jobTitle;
 	}
 
-	@javax.persistence.Transient
-	public Duration getAverageTaskEcecutionTime() {
-		return averageTaskEcecutionTime;
-	}
-
-	public void setAverageTaskEcecutionTime(Duration averageTaskEcecutionTime) {
-		this.averageTaskEcecutionTime = averageTaskEcecutionTime;
-	}
-
-	@javax.persistence.Transient
-	public Duration getAverageInvolvementResponseTime() {
-		return averageInvolvementResponseTime;
-	}
-
-	public void setAverageInvolvementResponseTime(Duration averageInvolvementResponseTime) {
-		this.averageInvolvementResponseTime = averageInvolvementResponseTime;
-	}
-
-	@javax.persistence.Transient
-	public int getProjectsInvolvedCount() {
-		return projectsInvolvedCount;
-	}
-
-	public void setProjectsInvolvedCount(int projectsInvolvedCount) {
-		this.projectsInvolvedCount = projectsInvolvedCount;
-	}
-
-	@javax.persistence.Transient
-	public long getTasksExecutedCount() {
-		return tasksExecutedCount;
-	}
-
-	public void setTasksExecutedCount(long tasksExecutedCount) {
-		this.tasksExecutedCount = tasksExecutedCount;
-	}
-
-	@javax.persistence.Transient
-	public long getTaskInvolvementsCount() {
-		return taskInvolvementsCount;
-	}
-
-	public void setTaskInvolvementsCount(long taskInvolvementsCount) {
-		this.taskInvolvementsCount = taskInvolvementsCount;
-	}
-
-	@JsonProperty
-	@Column(unique=true, name="username")
-	@NotBlank(message="The username can not be blank.")
 	public String getUsername() {
 		return username;
 	}
 
-	public void setUsername(String name) {
-		this.username = name;
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	
-	@JsonProperty
-	@Column(name="fullname")
-	@NotBlank(message="The username can not be blank.")
+
 	public String getFullName() {
 		return fullName;
 	}
 
-	public void setFullName(String name) {
-		this.fullName = name;
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 
-	@Column(name="gender")
-	@JsonProperty
-	@Enumerated(EnumType.STRING)
 	public Gender getGender() {
 		return gender;
 	}
@@ -183,14 +63,20 @@ public class UserBean implements Serializable {
 		this.gender = gender;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="asignee", cascade=CascadeType.ALL)
-	public Collection<TaskBean> getAssignedTasks() {
-		return assignedTasks;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setAssignedTasks(Collection<TaskBean> assignedTasks) {
-		this.assignedTasks = assignedTasks;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	
+	public Boolean getIsGod() {
+		return isGod;
+	}
+
+	public void setIsGod(Boolean isGod) {
+		this.isGod = isGod;
+	}
+
 }

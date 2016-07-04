@@ -10,19 +10,19 @@ import org.hibernate.criterion.Restrictions;
 
 import com.fmi.javaee.vertex.session.SessionFactoryData;
 import com.fmi.javaee.vertex.user.Gender;
-import com.fmi.javaee.vertex.user.UserBean;
+import com.fmi.javaee.vertex.user.UserEntity;
 import com.fmi.javaee.vertex.user.data.UserData;
 
 public class UserDataImpl implements UserData {
 
 	@Override
-	public UserBean getUser(String id) {
+	public UserEntity getUser(String id) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
 			@SuppressWarnings("deprecation")
-			Criteria criteria = session.createCriteria(UserBean.class);
+			Criteria criteria = session.createCriteria(UserEntity.class);
 			criteria.add(Restrictions.eq("userId", id));
-			UserBean user = (UserBean) criteria.uniqueResult();
+			UserEntity user = (UserEntity) criteria.uniqueResult();
 			if ( user != null) {
 				return user;
 			} else {
@@ -34,15 +34,15 @@ public class UserDataImpl implements UserData {
 	}
 
 	@Override
-	public UserBean getUser(String email, char[] password) {
+	public UserEntity getUser(String email, char[] password) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
 			@SuppressWarnings("deprecation")
-			Criteria criteria = session.createCriteria(UserBean.class);
+			Criteria criteria = session.createCriteria(UserEntity.class);
 			criteria
 			.add(Restrictions.eq("email", email))
 			.add(Restrictions.eq("password", String.valueOf(password)));
-			UserBean users = (UserBean) criteria.uniqueResult();
+			UserEntity users = (UserEntity) criteria.uniqueResult();
 			if ( users != null) {
 				return users;
 			} else {
@@ -54,14 +54,14 @@ public class UserDataImpl implements UserData {
 	}
 
 	@Override
-	public List<UserBean> getUsers(int limit, Integer offset) {
+	public List<UserEntity> getUsers(int limit, Integer offset) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
 			@SuppressWarnings("deprecation")
-			Criteria criteria = session.createCriteria(UserBean.class);
+			Criteria criteria = session.createCriteria(UserEntity.class);
 			criteria.setMaxResults(limit).setFirstResult(offset);
 			@SuppressWarnings("unchecked")
-			List<UserBean> users = criteria.list();
+			List<UserEntity> users = criteria.list();
 			if ( users != null) {
 				return users;
 			} else {
@@ -73,13 +73,13 @@ public class UserDataImpl implements UserData {
 	}
 
 	@Override
-	public UserBean getUsersByJobTitle(String jobTitle) {
+	public UserEntity getUsersByJobTitle(String jobTitle) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
 			@SuppressWarnings("deprecation")
-			Criteria criteria = session.createCriteria(UserBean.class);
+			Criteria criteria = session.createCriteria(UserEntity.class);
 			criteria.add(Restrictions.eq("jobTitle", jobTitle));
-			UserBean users = (UserBean) criteria.uniqueResult();
+			UserEntity users = (UserEntity) criteria.uniqueResult();
 			if ( users != null) {
 				return users;
 			} else {
@@ -91,13 +91,13 @@ public class UserDataImpl implements UserData {
 	}
 
 	@Override
-	public UserBean getUsersByGender(Gender gender) {
+	public UserEntity getUsersByGender(Gender gender) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
 			@SuppressWarnings("deprecation")
-			Criteria criteria = session.createCriteria(UserBean.class);
+			Criteria criteria = session.createCriteria(UserEntity.class);
 			criteria.add(Restrictions.eq("gender", gender));
-			UserBean users = (UserBean) criteria.uniqueResult();
+			UserEntity users = (UserEntity) criteria.uniqueResult();
 			if ( users != null) {
 				return users;
 			} else {
@@ -109,11 +109,11 @@ public class UserDataImpl implements UserData {
 	}
 
 	@Override
-	public UserBean createUser(UserBean user) {
+	public UserEntity createUser(UserEntity user) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		
 		try {
-			UserBean domainUser = user;
+			UserEntity domainUser = user;
 			//TODO Should validate the user
 			
 			Transaction tx = session.beginTransaction();
@@ -130,13 +130,13 @@ public class UserDataImpl implements UserData {
 	}
 
 	@Override
-	public UserBean getUserByEmail(String email) {
+	public UserEntity getUserByEmail(String email) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
 			@SuppressWarnings("deprecation")
-			Criteria criteria = session.createCriteria(UserBean.class);
+			Criteria criteria = session.createCriteria(UserEntity.class);
 			criteria.add(Restrictions.eq("email", email));
-			UserBean users = (UserBean) criteria.uniqueResult();
+			UserEntity users = (UserEntity) criteria.uniqueResult();
 			if ( users != null) {
 				return users;
 			} else {
@@ -148,13 +148,13 @@ public class UserDataImpl implements UserData {
 	}
 
 	@Override
-	public UserBean getUserByUsername(String username) {
+	public UserEntity getUserByUsername(String username) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
 			@SuppressWarnings("deprecation")
-			Criteria criteria = session.createCriteria(UserBean.class);
+			Criteria criteria = session.createCriteria(UserEntity.class);
 			criteria.add(Restrictions.eq("username", username));
-			UserBean users = (UserBean) criteria.uniqueResult();
+			UserEntity users = (UserEntity) criteria.uniqueResult();
 			if ( users != null) {
 				return users;
 			} else {

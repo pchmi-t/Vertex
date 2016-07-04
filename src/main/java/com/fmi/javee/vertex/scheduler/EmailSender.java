@@ -14,9 +14,9 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fmi.javaee.vertex.event.EventBean;
+import com.fmi.javaee.vertex.event.EventEntity;
 import com.fmi.javaee.vertex.factory.Factory;
-import com.fmi.javaee.vertex.user.UserBean;
+import com.fmi.javaee.vertex.user.UserEntity;
 
 public class EmailSender implements Job {
 
@@ -27,10 +27,10 @@ public class EmailSender implements Job {
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		LOG.info("Trigger ... ");
-		List<EventBean> events = collectAllEvents();
-		Set<UserBean> users = events.stream().map((x) -> x.getRefUser()).collect(Collectors.toSet());
-		for (Iterator<UserBean> iterator = users.iterator(); iterator.hasNext();) {
-			UserBean userBean = (UserBean) iterator.next();
+		List<EventEntity> events = collectAllEvents();
+		Set<UserEntity> users = events.stream().map((x) -> x.getRefUser()).collect(Collectors.toSet());
+		for (Iterator<UserEntity> iterator = users.iterator(); iterator.hasNext();) {
+			UserEntity userBean = (UserEntity) iterator.next();
 			String email = userBean.getEmail();
 			String message = events.stream()
 					.filter(x -> x.getRefUser().getUserId().equals(userBean.getUserId()))
@@ -39,7 +39,7 @@ public class EmailSender implements Job {
 		}
 	}
 
-	private List<EventBean> collectAllEvents() {
+	private List<EventEntity> collectAllEvents() {
 		// today    
 		Calendar date = new GregorianCalendar();
 		// reset hour, minutes, seconds and millis
@@ -52,7 +52,7 @@ public class EmailSender implements Job {
 		date.add(Calendar.DAY_OF_MONTH, 1);
 		Date till = date.getTime();
 		return factory
-				.getEventData()
+				.getEventDAO()
 				.getAllEventsByTime()
 				.stream()
 				.filter(x -> x.getCreationTime().before(till) && x.getCreationTime().after(from))

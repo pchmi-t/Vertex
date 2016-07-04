@@ -14,7 +14,7 @@ import com.fmi.javaee.vertex.task.Priority;
 import com.fmi.javaee.vertex.task.Status;
 import com.fmi.javaee.vertex.task.TaskBean;
 import com.fmi.javaee.vertex.task.data.TaskData;
-import com.fmi.javaee.vertex.user.UserBean;
+import com.fmi.javaee.vertex.user.UserEntity;
 
 public class TaskDataImpl implements TaskData {
 
@@ -79,7 +79,7 @@ public class TaskDataImpl implements TaskData {
 	}
 
 	@Override
-	public List<TaskBean> getTasksByAssignee(UserBean asignee) {
+	public List<TaskBean> getTasksByAssignee(UserEntity asignee) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
 			@SuppressWarnings("deprecation")

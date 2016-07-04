@@ -8,21 +8,22 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
-import com.fmi.javaee.vertex.event.EventBean;
-import com.fmi.javaee.vertex.event.data.EventData;
+import com.fmi.javaee.vertex.event.EventEntity;
+import com.fmi.javaee.vertex.event.data.EventDAO;
 import com.fmi.javaee.vertex.session.SessionFactoryData;
 
-public class EventDataImpl implements EventData {
+public class EventDataImpl implements EventDAO {
 
 	@Override
 	public int getNumberOfEvents(Date expirationTime) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
 			@SuppressWarnings("deprecation")
-			Criteria criteria = session.createCriteria(EventBean.class);
+			Criteria criteria = session.createCriteria(EventEntity.class);
 			@SuppressWarnings("unchecked")
-			List<EventBean> event = criteria.list();
+			List<EventEntity> event = criteria.list();
 			if ( event != null) {
 				return event.size();
 			} else {
@@ -34,15 +35,16 @@ public class EventDataImpl implements EventData {
 	}
 
 	@Override
-	public Collection<EventBean> getAllEventsByTime() {
+	public Collection<EventEntity> getAllEventsByTime() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public EventBean createEvent(EventBean event) {
+	public EventEntity createEvent(EventEntity event) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
+			event.setCreationTime(new Date());
 			Transaction tx = session.beginTransaction();
 			session.save(event);
 			tx.commit();
@@ -50,6 +52,18 @@ public class EventDataImpl implements EventData {
 		} catch (HibernateException ex) {
 			final String errorMessage = "A database error occured while saving the event.";
 			throw new RuntimeException(errorMessage, ex);
+		} finally {
+			SessionFactoryData.closeSession(session);
+		}
+	}
+
+	@Override
+	public Collection<EventEntity> getEventsOfUser(String userEmail) {
+		Session session = SessionFactoryData.getSessionFactory().openSession();
+		try {
+			Query<EventEntity> query = session.createNamedQuery("getEventsByUser", EventEntity.class);
+			List<EventEntity> resultList = query.setParameter("email", userEmail).getResultList();
+			return resultList;
 		} finally {
 			SessionFactoryData.closeSession(session);
 		}

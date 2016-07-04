@@ -24,17 +24,18 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fmi.javaee.vertex.project.ProjectEntity;
 import com.fmi.javaee.vertex.task.monitoring.Component;
 import com.fmi.javaee.vertex.task.monitoring.TaskMonitoring;
-import com.fmi.javaee.vertex.user.UserBean;
+import com.fmi.javaee.vertex.user.UserEntity;
 
-@Table(name="tasks")
+@Table(name = "tasks")
 @Entity
 public class TaskBean extends Observable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	//Persisted properties
+	// Persisted properties
 	private String taskId;
 
 	private Date creationTime;
@@ -45,17 +46,19 @@ public class TaskBean extends Observable implements Serializable {
 
 	private Priority priority;
 
-	private UserBean asignee;
+	private UserEntity asignee;
 
 	private String definition;
 
-	private UserBean creator;
+	private UserEntity creator;
 
-	private UserBean lastModificator;
+	private UserEntity lastModificator;
 
 	private String title;
 
-	//private Project project;
+	private ProjectEntity project;
+
+	// private Project project;
 
 	@Transient
 	private boolean isObserverNotifyed = false;
@@ -64,7 +67,7 @@ public class TaskBean extends Observable implements Serializable {
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@JsonProperty
-	@Column(name="taskId", unique=true, nullable=false)
+	@Column(name = "taskId", unique = true, nullable = false)
 	public String getTaskId() {
 		return taskId;
 	}
@@ -73,7 +76,7 @@ public class TaskBean extends Observable implements Serializable {
 		this.taskId = taskId;
 	}
 
-	@Column(name="creationTime")
+	@Column(name = "creationTime")
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty
 	public Date getCreationTime() {
@@ -84,7 +87,7 @@ public class TaskBean extends Observable implements Serializable {
 		this.creationTime = currentDate;
 	}
 
-	@Column(name="modificationTime")
+	@Column(name = "modificationTime")
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty
 	public Date getModificationTime() {
@@ -95,7 +98,7 @@ public class TaskBean extends Observable implements Serializable {
 		this.modificationTime = currentDate;
 	}
 
-	@Column(name="status")
+	@Column(name = "status")
 	@JsonProperty
 	@Enumerated(EnumType.STRING)
 	public Status getStatus() {
@@ -111,15 +114,15 @@ public class TaskBean extends Observable implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "asignee_id", nullable = false)
-	public UserBean getAsignee() {
+	public UserEntity getAsignee() {
 		return asignee;
 	}
 
-	public void setAsignee(UserBean asignee) {
+	public void setAsignee(UserEntity asignee) {
 		this.asignee = asignee;
 	}
 
-	@Column(name="definition")
+	@Column(name = "definition")
 	@JsonProperty
 	public String getDefinition() {
 		return definition;
@@ -132,30 +135,30 @@ public class TaskBean extends Observable implements Serializable {
 		notifyObservers(Component.DEFINITION);
 	}
 
-	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-	@JoinColumn(name="creator_id")
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "creator_id")
 	@JsonProperty
-	public UserBean getCreator() {
+	public UserEntity getCreator() {
 		return creator;
 	}
 
-	public void setCreator(UserBean creator) {
+	public void setCreator(UserEntity creator) {
 		this.creator = creator;
 	}
 
 	@JsonProperty
-	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-	@JoinColumn(name="last_modificator_id")
-	public UserBean getLastModificator() {
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "last_modificator_id")
+	public UserEntity getLastModificator() {
 		return lastModificator;
 	}
 
-	public void setLastModificator(UserBean lastModificator) {
+	public void setLastModificator(UserEntity lastModificator) {
 		this.lastModificator = lastModificator;
 	}
 
 	@JsonProperty
-	@Column(name="priority")
+	@Column(name = "priority")
 	@Enumerated(EnumType.STRING)
 	public Priority getPriority() {
 		return priority;
@@ -167,9 +170,9 @@ public class TaskBean extends Observable implements Serializable {
 		setChanged();
 		notifyObservers(Component.PRIORITY);
 	}
-	
-	@Column(name="title", updatable=false)
-	@NotBlank(message="The task title can not be null or empty.")
+
+	@Column(name = "title", updatable = false)
+	@NotBlank(message = "The task title can not be null or empty.")
 	@JsonProperty
 	public String getTitle() {
 		return title;
@@ -177,6 +180,16 @@ public class TaskBean extends Observable implements Serializable {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "projectId")
+	public ProjectEntity getProject() {
+		return project;
+	}
+
+	public void setProject(ProjectEntity project) {
+		this.project = project;
 	}
 
 	private void notifyObserver() {

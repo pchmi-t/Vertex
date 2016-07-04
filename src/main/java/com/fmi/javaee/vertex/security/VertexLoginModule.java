@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fmi.javaee.vertex.factory.Factory;
-import com.fmi.javaee.vertex.user.UserBean;
+import com.fmi.javaee.vertex.user.UserEntity;
 import com.fmi.javaee.vertex.user.data.UserData;
 
 public class VertexLoginModule implements LoginModule {
@@ -70,7 +70,7 @@ public class VertexLoginModule implements LoginModule {
 	private boolean login(String email, char[] password) {
 		LOG.info("Checking the credentials of user [{}]", email);
 		UserData userDAO = Factory.getInstance().getUserData();
-		UserBean user = userDAO.getUser(email, password);
+		UserEntity user = userDAO.getUser(email, password);
 		if (user == null) {
 			return false;
 		}

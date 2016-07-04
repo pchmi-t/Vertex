@@ -18,19 +18,19 @@ import com.fmi.javaee.vertex.user.data.UserData;
 public class RegisterService {
 	
 	@POST
-	public Response createUser(UserBean user) {
+	public Response createUser(UserEntity user) {
 		// TODO Check for permissions
 		UserData userDAO = Factory.getInstance().getUserData();
-		UserBean existingUser = userDAO.getUserByEmail(user.getEmail());
+		UserEntity existingUser = userDAO.getUserByEmail(user.getEmail());
 		if (existingUser != null) {
 			return Response.status(Status.CONFLICT).build();
 		}
 		
-		UserBean createdUser = userDAO.createUser(user);
+		UserEntity createdUser = userDAO.createUser(user);
 		if (createdUser == null) {
 			return Response.status(Status.BAD_REQUEST).build();
 		} else {
-			return Response.status(HttpServletResponse.SC_CREATED).entity(createdUser).build();
+			return Response.status(HttpServletResponse.SC_CREATED).entity(new UserBean(createdUser)).build();
 		}
 	}
 }

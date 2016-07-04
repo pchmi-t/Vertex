@@ -2,54 +2,37 @@ package com.fmi.javaee.vertex.event;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import com.fmi.javaee.vertex.task.monitoring.Component;
 
-import org.hibernate.annotations.GenericGenerator;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fmi.javaee.vertex.task.TaskBean;
-import com.fmi.javaee.vertex.user.UserBean;
-
-@Table(name="event")
-@Entity
 public class EventBean {
-	
-	private String eventId;
-	
-	private Date creationTime;
-	
-	private String description;
-	
-	private TaskBean refTask;
 
-	private UserBean refUser;
-	
-	@Id
-	@GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-	@JsonProperty
-	@Column(name="eventId", unique = true, nullable = false)
+	private String eventId;
+	private Date creationTime;
+	private String description;
+	private String taskId;
+	private String userEmail;
+	private Component eventComponent;
+
+	public EventBean() {
+	}
+
+	public EventBean(EventEntity entity) {
+		this.eventId = entity.getEventId();
+		this.description = entity.getDescription();
+		this.creationTime = entity.getCreationTime();
+		this.eventComponent = entity.getEventComponent();
+		this.taskId = entity.getRefTask() != null ? entity.getRefTask().getTaskId() : null;
+		this.userEmail = entity.getRefUser() != null ? entity.getRefUser().getEmail() : null;
+	}
+
 	public String getEventId() {
 		return eventId;
 	}
-	
+
 	public void setEventId(String eventId) {
 		this.eventId = eventId;
 	}
 
-	@Column(name="creationTime")
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonProperty
 	public Date getCreationTime() {
 		return creationTime;
 	}
@@ -58,8 +41,6 @@ public class EventBean {
 		this.creationTime = creationTime;
 	}
 
-	@Column(name="description")
-	@JsonProperty
 	public String getDescription() {
 		return description;
 	}
@@ -68,27 +49,28 @@ public class EventBean {
 		this.description = description;
 	}
 
-	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-	@JoinColumn(name="task_id")
-	@JsonProperty
-	public TaskBean getRefTask() {
-		return refTask;
-	}
-	
-	public void setRefTask(TaskBean refTask) {
-		this.refTask = refTask;
+	public String getTaskId() {
+		return taskId;
 	}
 
-	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-	@JoinColumn(name="user_id")
-	@JsonProperty
-	public UserBean getRefUser() {
-		return refUser;
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
 	}
 
-	public void setRefUser(UserBean refUser) {
-		this.refUser = refUser;
+	public String getUserEmail() {
+		return userEmail;
 	}
-	
-	
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public Component getEventComponent() {
+		return eventComponent;
+	}
+
+	public void setEventComponent(Component eventComponent) {
+		this.eventComponent = eventComponent;
+	}
+
 }

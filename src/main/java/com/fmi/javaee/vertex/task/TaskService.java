@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response.Status;
 
 import com.fmi.javaee.vertex.factory.Factory;
 import com.fmi.javaee.vertex.task.data.TaskData;
-import com.fmi.javaee.vertex.user.UserBean;
+import com.fmi.javaee.vertex.user.UserEntity;
 import com.fmi.javaee.vertex.user.data.UserData;
 
 @Path("task")
@@ -59,7 +59,7 @@ public class TaskService {
 	@Path("/asignee/{email}")
 	public Response getTaskByAssignee(@PathParam("email") String email) {
 		UserData userData = Factory.getInstance().getUserData();
-		UserBean user = userData.getUserByEmail(email);
+		UserEntity user = userData.getUserByEmail(email);
 		if (user == null) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}

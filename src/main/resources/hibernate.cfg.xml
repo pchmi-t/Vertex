@@ -8,15 +8,16 @@
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
         <property name="hibernate.connection.username">postgres</property>
-        <property name="hibernate.connection.password">SECRET123</property>
+        <property name="hibernate.connection.password">Abcd1234</property>
         <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/vertexdb</property>
         <property name="connection_pool_size">10</property>
         <property name="hbm2ddl.auto">update</property>
         <property name="show_sql">true</property>
         
         <!-- Bellow is all the mapped beans -->
-        <mapping class="com.fmi.javaee.vertex.user.UserBean" />
+        <mapping class="com.fmi.javaee.vertex.user.UserEntity" />
 		<mapping class="com.fmi.javaee.vertex.task.TaskBean" />
-		<mapping class="com.fmi.javaee.vertex.event.EventBean" />
+		<mapping class="com.fmi.javaee.vertex.event.EventEntity" />
+		<mapping class="com.fmi.javaee.vertex.project.ProjectEntity" />
     </session-factory>
 </hibernate-configuration>
