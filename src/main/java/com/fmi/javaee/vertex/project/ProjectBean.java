@@ -1,6 +1,12 @@
 package com.fmi.javaee.vertex.project;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fmi.javaee.vertex.task.TaskBean;
+import com.fmi.javaee.vertex.user.UserBean;
+import com.fmi.javaee.vertex.user.UserEntity;
 
 public class ProjectBean {
 
@@ -8,7 +14,9 @@ public class ProjectBean {
 	private String projectName;
 	private String projectDescription;
 	private Date creationTime;
-	private int taskCount;
+	private Set<UserBean> members = new HashSet<>();
+	private Set<UserBean> administrators = new HashSet<>();
+	private Set<TaskBean> tasks = new HashSet<>();
 
 	public ProjectBean() {
 	}
@@ -18,7 +26,14 @@ public class ProjectBean {
 		this.projectName = entity.getProjectName();
 		this.projectDescription = entity.getProjectDescription();
 		this.creationTime = entity.getCreationTime();
-		this.taskCount = entity.getTasks().size();
+		for (UserEntity adminEntity : entity.getAdministrators()) {
+			this.administrators.add(new UserBean(adminEntity));
+		}
+		
+		for (UserEntity memberEntity : entity.getMembers()) {
+			this.members.add(new UserBean(memberEntity));
+		}
+		this.tasks = entity.getTasks();
 
 	}
 
@@ -38,12 +53,28 @@ public class ProjectBean {
 		this.creationTime = creationTime;
 	}
 
-	public int getTaskCount() {
-		return taskCount;
+	public Set<UserBean> getMembers() {
+		return members;
 	}
 
-	public void setTaskCount(int taskCount) {
-		this.taskCount = taskCount;
+	public void setMembers(Set<UserBean> members) {
+		this.members = members;
+	}
+
+	public Set<UserBean> getAdministrators() {
+		return administrators;
+	}
+
+	public void setAdministrators(Set<UserBean> administrators) {
+		this.administrators = administrators;
+	}
+
+	public Set<TaskBean> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(Set<TaskBean> tasks) {
+		this.tasks = tasks;
 	}
 
 	public String getProjectName() {
@@ -61,5 +92,7 @@ public class ProjectBean {
 	public void setProjectDescription(String projectDescription) {
 		this.projectDescription = projectDescription;
 	}
+	
+	
 
 }

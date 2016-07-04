@@ -381,6 +381,8 @@
 						<div id="projectlist" class="media"></div>
 						</div>
 					</div>
+					<div id="projectdetails" class="tile">
+					</div>
 				</div>
 				<div class="clearfix"></div>
 			</section>
@@ -444,13 +446,14 @@
 	<script>
 	
 	$(document).ready(function() {
-		getUser();
+		user = getUser();
 		getEvents();
 		
 		$.ajax({
 			url: "/vertex/api/project/",
 			type : "GET",
 			success : function (jqXHR){
+				projects = jqXHR;
 				$.each(jqXHR, listProject)
 			},
 			error : function (jqXHR){
@@ -460,15 +463,55 @@
 				}
 			}
 		});
+		
 	});
 	
 	function listProject(index, project) {
 		var projectHtml = '<div class="pull-right"><div class="counts">';
-		projectHtml += project.taskCount + '</div></div>';
-		projectHtml += '<div class="media-body"><h6>';
-		projectHtml += project.projectName + '</h6></div>';
+		projectHtml += project.tasks.length + '</div></div>';
+		projectHtml += '<div class="media-body"><h6><a class="show-project-details" onclick=showProject(this.id) ';
+		projectHtml += " id='" + project.projectId + "'>" + project.projectName + '</a></h6></div>';
 		
 		$("#projectlist").append(projectHtml);
+	}
+	
+	function showProject(projectId) {
+		var selectedProject = projects.filter(function(project) {
+			return project.projectId == projectId;
+		})[0];
+		
+		var detailsHtml = '<h2 class="tile-title">' + selectedProject.projectName;
+		detailsHtml += '</h2>';
+		detailsHtml += '<div class="listview icon-list"><div class="media">';
+		detailsHtml += '<i class="icon pull-left">&#61854;</i>';
+		detailsHtml += '<div class="media-body">' + selectedProject.projectDescription + '</div></div> </div>'
+		detailsHtml += '<h4 class="page-title b-0">Ongoing Tasks</h4>';
+		detailsHtml += '<div class="listview list-container">';
+		if (selectedProject.tasks.length == 0) {
+			detailsHtml+= '<div class="media"><div class="media-body">There are no ongoing tasks.</div></div>';
+		} else {
+			$.each(selectedProject.tasks, function(index, task) {
+				if (task.status != 'RESOLVED') {
+					detailsHtml+= '<div class="media-body"><div class="media-body">' + task.definition + '</div></div>';
+					
+				}
+			});
+		}
+		detailsHtml += '<h4 class="page-title b-0">Members</h4><div class="listview list-container">';
+		$.each(selectedProject.members, function(index, member) {
+			detailsHtml+= '</div><div class="media"><i class="icon pull-left">&#61844;</i><div class="media-body">' + member.fullName + '</div></div>';
+		});
+		
+		detailsHtml += '<h4 class="page-title b-0">Administrators</h4><div class="listview list-container">';
+		$.each(selectedProject.administrators, function(index, admin) {
+			detailsHtml+= '</div><div class="media"><i class="icon pull-left">&#61822;</i><div class="media-body">' + admin.fullName + '</div></div>';
+		});
+		detailsHtml += '</div>';
+		
+		if (isUserGod()) {
+			detailsHtml += '<button class="btn btn-sm pull-right">Add Task</button>';
+		}
+		$('#projectdetails').html(detailsHtml);
 	}
 	
 	</script>

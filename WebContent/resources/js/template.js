@@ -13,6 +13,19 @@ function getEvents() {
 	});
 }
 
+function isUserGod() {
+	var isGod = false;
+	$.ajax({
+		url: "/vertex/api/user/",
+		type : "GET",
+		async:false,
+		success : function (jqXHR){
+			isGod = jqXHR.isGod;
+		}
+	});
+	return isGod;
+}
+
 function getUser() {
 	var userFullName = sessionStorage.getItem('userFullName');
 	var userEmail = sessionStorage.getItem('userEmail');
@@ -24,10 +37,13 @@ function getUser() {
 			success : function (jqXHR){
 				loggedUser = jqXHR;
 				$("#userFullName").text(loggedUser.fullName);
+				sessionStorage.setItem('userFullName', loggedUser.fullName);
 				$("#userFullName").after(loggedUser.email);
+				sessionStorage.setItem('userEmail', loggedUser.email);
 				if (loggedUser.gender == 'FEMALE') {
 					$(".profile-pic").attr("src","/vertex/resources/img/profile-pics/female-user-icon.png");
 				}
+				sessionStorage.setItem('userGender', loggedUser.gender);
 			}
 		});
 	} else {
@@ -37,7 +53,6 @@ function getUser() {
 			$(".profile-pic").attr("src","/vertex/resources/img/profile-pics/female-user-icon.png");
 		}
 	}
-	
 }
 
 function getEventIcon(event) {

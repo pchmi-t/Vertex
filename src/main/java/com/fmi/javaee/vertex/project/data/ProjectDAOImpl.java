@@ -18,18 +18,15 @@ import com.fmi.javaee.vertex.user.UserEntity;
 
 public class ProjectDAOImpl implements ProjectDAO {
 
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	@Override
 	public List<ProjectEntity> getProjectsOfUser(String userEmail) {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 		try {
-			@SuppressWarnings("deprecation")
-			Criteria criteria = session.createCriteria(UserEntity.class);
-			criteria.add(Restrictions.eq("email", userEmail));
-			UserEntity userByEmail = (UserEntity) criteria.uniqueResult();
-			if (userByEmail == null) {
-				return new ArrayList<>();
-			}
-			return new ArrayList<>(userByEmail.getMemberProjects());
+			Criteria criteria = session.createCriteria(ProjectEntity.class);
+			criteria.createAlias("members", "membersAlias");
+			criteria.add(Restrictions.eq("membersAlias.email", userEmail));
+			return (List<ProjectEntity>) criteria.list();
 		} finally {
 			SessionFactoryData.closeSession(session);
 		}

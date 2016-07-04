@@ -53,8 +53,8 @@ public class ProjectEntity implements Serializable {
 		this.projectId = projectId;
 	}
 
-	@ManyToMany
-	@JoinTable(name = "projectMembers", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "email"))
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "projectMembers", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "userId"))
 	public Set<UserEntity> getMembers() {
 		return members;
 	}
@@ -63,8 +63,8 @@ public class ProjectEntity implements Serializable {
 		this.members = members;
 	}
 
-	@ManyToMany
-	@JoinTable(name = "projectAdmins", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "email"))
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "projectAdmins", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "userId"))
 	public Set<UserEntity> getAdministrators() {
 		return administrators;
 	}
