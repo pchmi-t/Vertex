@@ -9,7 +9,6 @@ public class ProjectBean {
 	private String projectDescription;
 	private Date creationTime;
 	private int taskCount;
-	private int membersCount;
 
 	public ProjectBean() {
 	}
@@ -20,7 +19,6 @@ public class ProjectBean {
 		this.projectDescription = entity.getProjectDescription();
 		this.creationTime = entity.getCreationTime();
 		this.taskCount = entity.getTasks().size();
-		this.membersCount = entity.getMembers().size();
 
 	}
 
@@ -46,14 +44,6 @@ public class ProjectBean {
 
 	public void setTaskCount(int taskCount) {
 		this.taskCount = taskCount;
-	}
-
-	public int getMembersCount() {
-		return membersCount;
-	}
-
-	public void setMembersCount(int membersCount) {
-		this.membersCount = membersCount;
 	}
 
 	public String getProjectName() {

@@ -1,5 +1,8 @@
 package com.fmi.javaee.vertex.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -45,6 +48,19 @@ public class UserService {
 			return Response.status(HttpServletResponse.SC_NOT_FOUND).build();
 		}
 		return Response.ok(new UserBean(user)).build();
+
+	}
+	
+	@GET
+	@Path("/all")
+	public Response getAllUsers() {
+		UserData userData = Factory.getInstance().getUserData();
+		List<UserEntity> userEntities = userData.getUsers(Integer.MAX_VALUE, 0);
+		List<UserBean> users = new ArrayList<>();
+		for (UserEntity entity : userEntities) {
+			users.add(new UserBean(entity));
+		}
+		return Response.ok(users).build();
 
 	}
 

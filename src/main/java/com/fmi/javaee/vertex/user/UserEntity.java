@@ -3,6 +3,7 @@ package com.fmi.javaee.vertex.user;
 import java.beans.Transient;
 import java.io.Serializable;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
@@ -41,9 +42,9 @@ public class UserEntity implements Serializable {
 	private String password;
 	private String email;
 	private Boolean isGod;
-	private Collection<TaskBean> assignedTasks;
-	private Collection<ProjectEntity> memberProjects;
-	private Collection<ProjectEntity> adminProjects;
+	private Collection<TaskBean> assignedTasks = new ArrayList<>();
+	private Collection<ProjectEntity> memberProjects = new ArrayList<>();
+	private Collection<ProjectEntity> adminProjects = new ArrayList<>();
 
 	private Duration averageTaskEcecutionTime;
 

@@ -439,36 +439,13 @@
 
 	<!-- All JS functions -->
 	<script src="/vertex/resources/js/functions.js"></script>
+	<script src="/vertex/resources/js/template.js"></script>
 	
 	<script>
 	
 	$(document).ready(function() {
-		
-		$.ajax({
-			url: "/vertex/api/user/",
-			type : "GET",
-			success : function (jqXHR){
-				loggedUser = jqXHR;
-				$("#userFullName").text(loggedUser.fullName);
-				$("#userFullName").after(loggedUser.email);
-				if (loggedUser.gender == 'FEMALE') {
-					$(".profile-pic").attr("src","/vertex/resources/img/profile-pics/female-user-icon.png");
-				}
-			}
-		});
-		
-		$.ajax({
-			url: "/vertex/api/event/",
-			type : "GET",
-			success : function (jqXHR){
-				$.each(jqXHR, listEvent)
-			},
-			error : function (jqXHR){
-				if (jqXHR.status == 404) {
-					$("#noeventsmessage").show();
-				}
-			}
-		});
+		getUser();
+		getEvents();
 		
 		$.ajax({
 			url: "/vertex/api/project/",
@@ -491,34 +468,9 @@
 		projectHtml += '<div class="media-body"><h6>';
 		projectHtml += project.projectName + '</h6></div>';
 		
-		
 		$("#projectlist").append(projectHtml);
 	}
 	
-	function listEvent(index, event) {
-		var eventHtml = '<div class="pull-left"><span class="icon">';
-			eventHtml += getEventIcon(event);
-			eventHtml += '</span></div>'
-			eventHtml += '<div class="media-body">' + event.description;
-			eventHtml += '  <small class="text-muted">' + new Date(event.creationTime).toDateString();;
-			eventHtml += '</small><br /></div>';
-			$('#eventssection').append(eventHtml);
-		}
-	
-	function getEventIcon(event) {
-		switch(event.eventComponent) {
-	    case 'STATUS':
-	       return '&#61752;';
-	    case 'DEFINITION':
-	        return '&#61952;';
-	    case 'PRIORITY':
-	        return '&#61738;';
-	    case 'COMMENT':
-	        return '&#61704;';
-	    default:
-	        return '&#61952;';
-	}
-	}
 	</script>
 </body>
 </html>

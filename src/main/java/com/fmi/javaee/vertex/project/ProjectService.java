@@ -1,6 +1,7 @@
 package com.fmi.javaee.vertex.project;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -58,7 +59,7 @@ public class ProjectService {
 		requestedMembers.addAll(requestedAdmins);
 		
 		UserData userData = Factory.getInstance().getUserData();
-		List<UserEntity> members = new ArrayList<>();
+		Set<UserEntity> members = new HashSet<>();
 		for (String memberEmail : requestedMembers) {
 			UserEntity member = userData.getUserByEmail(memberEmail);
 			if (member == null) {
@@ -67,7 +68,7 @@ public class ProjectService {
 			members.add(member);
 		}
 		
-		List<UserEntity> admins = new ArrayList<>();
+		Set<UserEntity> admins = new HashSet<>();
 		for (String adminEmail : requestedAdmins) {
 			UserEntity admin = userData.getUserByEmail(adminEmail);
 			if (admin == null) {

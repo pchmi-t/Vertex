@@ -3,9 +3,12 @@ package com.fmi.javaee.vertex.project;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -28,13 +31,13 @@ import com.fmi.javaee.vertex.user.UserEntity;
 public class ProjectEntity implements Serializable {
 
 	private static final long serialVersionUID = 2718353048410816625L;
-	
+
 	private String projectId;
 	private String projectName;
 	private String projectDescription;
-	private Collection<UserEntity> members;
-	private Collection<UserEntity> administrators;
-	private Collection<TaskBean> tasks;
+	private Set<UserEntity> members = new HashSet<>();
+	private Set<UserEntity> administrators = new HashSet<>();
+	private Set<TaskBean> tasks = new HashSet<>();
 	private Date creationTime;
 
 	@Id
@@ -51,31 +54,31 @@ public class ProjectEntity implements Serializable {
 	}
 
 	@ManyToMany
-	@JoinTable(name = "projectTasks", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "email"))
-	public Collection<UserEntity> getMembers() {
+	@JoinTable(name = "projectMembers", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "email"))
+	public Set<UserEntity> getMembers() {
 		return members;
 	}
 
-	public void setMembers(Collection<UserEntity> members) {
+	public void setMembers(Set<UserEntity> members) {
 		this.members = members;
 	}
 
 	@ManyToMany
-	@JoinTable(name = "projectTasks", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "email"))
-	public Collection<UserEntity> getAdministrators() {
+	@JoinTable(name = "projectAdmins", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "email"))
+	public Set<UserEntity> getAdministrators() {
 		return administrators;
 	}
 
-	public void setAdministrators(Collection<UserEntity> administrators) {
+	public void setAdministrators(Set<UserEntity> administrators) {
 		this.administrators = administrators;
 	}
 
-	@OneToMany(mappedBy="project")
-	public Collection<TaskBean> getTasks() {
+	@OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+	public Set<TaskBean> getTasks() {
 		return tasks;
 	}
 
-	public void setTasks(Collection<TaskBean> tasks) {
+	public void setTasks(Set<TaskBean> tasks) {
 		this.tasks = tasks;
 	}
 
@@ -110,7 +113,5 @@ public class ProjectEntity implements Serializable {
 	public void setProjectDescription(String projectDescription) {
 		this.projectDescription = projectDescription;
 	}
-	
-	
 
 }

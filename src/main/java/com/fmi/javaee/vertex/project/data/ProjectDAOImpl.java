@@ -3,19 +3,18 @@ package com.fmi.javaee.vertex.project.data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
-import com.fmi.javaee.vertex.factory.Factory;
 import com.fmi.javaee.vertex.project.ProjectDAO;
 import com.fmi.javaee.vertex.project.ProjectEntity;
 import com.fmi.javaee.vertex.project.ProjectRequest;
 import com.fmi.javaee.vertex.session.SessionFactoryData;
 import com.fmi.javaee.vertex.user.UserEntity;
-import com.fmi.javaee.vertex.user.data.UserData;
 
 public class ProjectDAOImpl implements ProjectDAO {
 
@@ -37,8 +36,8 @@ public class ProjectDAOImpl implements ProjectDAO {
 	}
 
 	@Override
-	public ProjectEntity createProject(ProjectRequest projectRequest, List<UserEntity> admins,
-			List<UserEntity> members) {
+	public ProjectEntity createProject(ProjectRequest projectRequest, Set<UserEntity> admins,
+			Set<UserEntity> members) {
 		ProjectEntity newProject = new ProjectEntity();
 		newProject.setAdministrators(admins);
 		newProject.setMembers(members);
