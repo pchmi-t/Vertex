@@ -94,12 +94,12 @@
 					<!-- Create Task -->
 					<div class="block-area" id="multi-column">
 						<h3 class="block-title">Create a New Task</h3>
-								<select class="select">
+								<select id="priority" class="select">
 									<option>Task Priority</option>
-									<option>MINOR</option>
-									<option>MAJOR</option>
-									<option>CRITICAL</option>
-									<option>BLOCKER</option>
+									<option>Minor</option>
+									<option>Major</option>
+									<option>Critical</option>
+									<option>Blocker</option>
 								</select><br/><br/>
 						<form class="row form-columned" role="form">
 							<div class="col-md-4">
@@ -188,35 +188,42 @@
 			getUser();
 			getEvents();
 
-			$("#startprojectbtn").on('click', function(event) {
+			$("#createtaskbtn").on('click', function(event) {
 				event.preventDefault();
 
-				var project = {
-					projectName : $("#projectname").val(),
-					projectDescription : $("#description").val(),
-					adminEmails : $("#admins").val().split(',\s*'),
-					memberEmails : $("#members").val().split(',\s*')
+				var task = {
+					priority : $("#priority option:selected").val().toUpperCase(),
+					title : $("#tasktitle").val(),
+					definition : $("#taskdef").val()
 				}
 
 				$.ajax({
-					url : "/vertex/api/project",
+					url : "/vertex/api/task/project/" + getParameterByName('projectId'),
 					type : "POST",
-					data : JSON.stringify(eval(project)),
+					data : JSON.stringify(eval(task)),
 					headers : {
 						"Content-type" : "application/json"
 					},
 					success : function() {
-						alert("Project was created!");
+						alert("Task was created!");
 						window.location.href = '/vertex/index.html';
 					},
 					error : function(jqXHR) {
-						if (jqXHR.status == 400) {
-							alert("Invalid list of user emails!")
-						}
+						alert("nope")
 					}
 				});
 			});
 		});
+		
+		function getParameterByName(name, url) {
+		    if (!url) url = window.location.href;
+		    name = name.replace(/[\[\]]/g, "\\$&");
+		    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+		        results = regex.exec(url);
+		    if (!results) return null;
+		    if (!results[2]) return '';
+		    return decodeURIComponent(results[2].replace(/\+/g, " "));
+		}
 	</script>
 </body>
 </html>

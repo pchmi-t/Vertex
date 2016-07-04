@@ -3,6 +3,8 @@ package com.fmi.javaee.vertex.task;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -11,11 +13,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.fmi.javaee.vertex.factory.Factory;
+import com.fmi.javaee.vertex.project.ProjectDAO;
+import com.fmi.javaee.vertex.project.ProjectEntity;
 import com.fmi.javaee.vertex.task.data.TaskData;
 import com.fmi.javaee.vertex.user.UserEntity;
 import com.fmi.javaee.vertex.user.data.UserData;
@@ -26,6 +31,35 @@ import com.fmi.javaee.vertex.user.data.UserData;
 public class TaskService {
 
 	private TaskData taskData = Factory.getInstance().getTaskData();
+	
+	@POST
+	@Path("project/{projectId}")
+	public Response createTask(@Context HttpServletRequest request, TaskBean taskRequest, @PathParam("projectId") String projectId) {
+		ProjectDAO projectDAO = Factory.getInstance().getProjectDAO();
+		ProjectEntity project = projectDAO.getProject(projectId);
+		
+		if (project == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		
+		String loggedEmail = request.getRemoteUser();
+		if (loggedEmail == null) {
+			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+		}
+		UserData userData = Factory.getInstance().getUserData();
+		UserEntity creator = userData.getUserByEmail(loggedEmail);
+		
+		taskRequest.setProject(project);
+		taskRequest.setCreator(creator);
+		
+		TaskBean createdTask = taskData.createTask(taskRequest);
+		if (createdTask != null) {
+			return Response.ok().entity(createdTask).build();
+		} else {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+	}
+	
 	
 	@POST
 	public Response createTask(TaskBean task) {

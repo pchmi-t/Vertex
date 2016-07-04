@@ -1,5 +1,6 @@
 package com.fmi.javaee.vertex.task.data.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -23,7 +24,10 @@ public class TaskDataImpl implements TaskData {
 		Session session = SessionFactoryData.getSessionFactory().openSession();
 
 		try {
-			//TODO Should validate the task
+			task.setCreationTime(new Date());
+			task.setModificationTime(task.getCreationTime());
+			task.setLastModificator(task.getCreator());
+			task.setStatus(Status.NEW);
 			
 			Transaction tx = session.beginTransaction();
 			session.save(task);

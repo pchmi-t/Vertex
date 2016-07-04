@@ -232,7 +232,8 @@
 		detailsHtml += '</div>';
 		
 		if (isUserGod()) {
-			detailsHtml += '<a href="/vertex/create-task.html"><button class="btn btn-sm pull-right">Add Task</button></a>';
+			console.log(selectedProject.projectId);
+			detailsHtml += '<a href="/vertex/create-task.html?projectId="' + selectedProject.projectId + '><button class="btn btn-sm pull-right">Add Task</button></a>';
 		}
 		$('#projectdetails').html(detailsHtml);
 	}

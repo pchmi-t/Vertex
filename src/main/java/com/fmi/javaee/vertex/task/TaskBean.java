@@ -113,7 +113,7 @@ public class TaskBean extends Observable implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "asignee_id", nullable = false)
+	@JoinColumn(name = "asignee_id")
 	public UserEntity getAsignee() {
 		return asignee;
 	}

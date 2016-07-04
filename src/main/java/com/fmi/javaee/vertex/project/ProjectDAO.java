@@ -11,4 +11,6 @@ public interface ProjectDAO {
 
 	public ProjectEntity createProject(ProjectRequest projectRequest, Set<UserEntity> admins, Set<UserEntity> members);
 
+	public ProjectEntity getProject(String projectId);
+
 }

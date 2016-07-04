@@ -53,4 +53,17 @@ public class ProjectDAOImpl implements ProjectDAO {
 		}
 	}
 
+	@Override
+	public ProjectEntity getProject(String projectId) {
+		Session session = SessionFactoryData.getSessionFactory().openSession();
+		try {
+			@SuppressWarnings("deprecation")
+			Criteria criteria = session.createCriteria(ProjectEntity.class);
+			criteria.add(Restrictions.eq("projectId", projectId));
+			return (ProjectEntity) criteria.uniqueResult();
+		} finally {
+			SessionFactoryData.closeSession(session);
+		}
+	}
+
 }
