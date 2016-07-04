@@ -88,7 +88,7 @@ public class TaskDataImpl implements TaskData {
 		try {
 			@SuppressWarnings("deprecation")
 			Criteria criteria = session.createCriteria(TaskBean.class);
-			criteria.add(Restrictions.eq("asignee_id", asignee));
+			criteria.add(Restrictions.eq("asignee", asignee));
 			@SuppressWarnings("unchecked")
 			List<TaskBean> tasks = criteria.list();
 			if ( tasks != null) {
