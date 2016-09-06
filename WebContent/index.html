@@ -235,9 +235,9 @@
 			
 			detailsHtml += '</tbody></table></div></div>';
 		}
-		detailsHtml += '<h4 class="page-title b-0">Members</h4><div class="listview list-container">';
+		detailsHtml += '<h4 class="page-title b-0">Members</h4><div class="listview list-container"></div>';
 		$.each(selectedProject.members, function(index, member) {
-			detailsHtml+= '</div><div class="media"><i class="icon pull-left">&#61844;</i><div class="media-body">' + member.fullName + '</div></div>';
+			detailsHtml+= '<div class="media"><i class="icon pull-left">&#61844;</i><div class="media-body">' + member.fullName + '</div></div>';
 		});
 		
 		detailsHtml += '<h4 class="page-title b-0">Administrators</h4><div class="listview list-container">';

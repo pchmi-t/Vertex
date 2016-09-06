@@ -28,10 +28,13 @@ import com.fmi.javaee.vertex.user.UserEntity;
 
 @Entity
 @Table(name = "tasks")
-@NamedQueries({ @NamedQuery(name = TaskEntity.GET_BY_ASIGNEE, query = "SELECT t FROM TaskEntity t WHERE t.asignee = :asignee") })
+@NamedQueries({ @NamedQuery(name = TaskEntity.GET_BY_ASIGNEE, query = "SELECT t FROM TaskEntity t WHERE t.asignee = :asignee"),
+	@NamedQuery(name = TaskEntity.GET_BY_CREATOR, query = "SELECT t FROM TaskEntity t WHERE t.creator = :creator")})
 public class TaskEntity {
 	
 	static final String GET_BY_ASIGNEE = "getByAsignee";
+	
+	static final String GET_BY_CREATOR = "getByCreator";
 
 	private String taskId;
 

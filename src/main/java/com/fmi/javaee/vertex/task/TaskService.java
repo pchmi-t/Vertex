@@ -108,23 +108,42 @@ public class TaskService {
 			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
 		}
 		
-		LOGGER.info("Retrieving all tasks of user [{}]", loggedEmail);
+		LOGGER.info("Retrieving all tasks assigned to user [{}]", loggedEmail);
 		UserEntity user = userDAO.getUserByEmail(loggedEmail);
 		
 		List<TaskEntity> usersTaskEntities = taskDAO.getTasksByAssignee(user);
+		return getByUser(usersTaskEntities);
+	}
+	
+	@GET
+	@Path("/creator/")
+	public Response getTaskByCreator(@Context HttpServletRequest request) {
+		String loggedEmail = request.getRemoteUser();
+		if (loggedEmail == null) {
+			LOGGER.error("Failed attempt to retrieve user tasks!");
+			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+		}
+
+		LOGGER.info("Retrieving all tasks created by user [{}]", loggedEmail);
+		UserEntity user = userDAO.getUserByEmail(loggedEmail);
+		
+		List<TaskEntity> usersTaskEntities = taskDAO.getTasksByCreator(user);
+		return getByUser(usersTaskEntities);
+	}
+
+	private Response getByUser(List<TaskEntity> usersTaskEntities) {
 		if (usersTaskEntities != null && !usersTaskEntities.isEmpty()) {
-			
 			List<Task> tasks = new ArrayList<>();
 			for (TaskEntity task : usersTaskEntities) {
 				tasks.add(new Task(task));
 			}
 
-			LOGGER.debug("Retrieved tasks of user [{}]: {}", loggedEmail, tasks);
 			return Response.ok().entity(tasks).build();
 		} else {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 	}
+	
 
 	@GET
 	public Response getTasksByCriteria(@QueryParam("username") String username, @QueryParam("limit") Integer limit,

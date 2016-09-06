@@ -14,4 +14,6 @@ public interface TaskDAO {
 	
 	List<TaskEntity> getTasksByAssignee(UserEntity asignee);
 
+	List<TaskEntity> getTasksByCreator(UserEntity creator);
+
 }

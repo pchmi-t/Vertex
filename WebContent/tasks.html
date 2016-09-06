@@ -98,6 +98,7 @@
 					<div class="clearfix"></div>
 				</header>
 				<div id="tasklist"></div>
+				<div id="created-tasklist"></div>
 			</div>
 
 		</section>
@@ -139,36 +140,58 @@
 			getUser();
 			getEvents();
 			
+			$("#page-custom-title").append($("#userFullName").text() + "'s Tasks");
+			
 			$.ajax({
 				url : "/vertex/api/task/asignee/",
 				type : "GET",
 				success : function(jqXHR) {
 					var tCount = jqXHR.length;
-					showTasks("Assigned Tasks", jqXHR);
-					$("#page-custom-title").append($("#userFullName").text() + "'s Tasks");
+					var taskhtml = getAssignedTasksTable("Assigned to Me", jqXHR);
+					$('#tasklist').append(taskhtml);
 					$("#tasksCount").text(tCount);
 				},
 				error : function(jqXHR) {
 					if (jqXHR.status == 404) {
-						var html = '<div class="media"><p class="text-center media-body">You have no tasks yet.</p></div>';
+						var html = '<div class="media"><br/><br/><p class="text-center media-body">You have no tasks yet.</p></div>';
 							$('#tasklist').append(html);
 							$("#tasksCount").text(0);
 					}
 				}
 			});
+			
+			$.ajax({
+				url : "/vertex/api/task/creator/",
+				type : "GET",
+				success : function(jqXHR) {
+					var tCount = jqXHR.length;
+					var createdTasksHtml = generateCreatedByTasksTable("Created By Me", jqXHR);
+					$('#created-tasklist').append(createdTasksHtml);
+				},
+				error : function(jqXHR) {
+					if (jqXHR.status == 404) {
+						$('#created-tasklist').hide();
+					}
+				}
+			});
+			
 		});
 
-		function showTasks(tableTitle, tasks) {
+		function getAssignedTasksTable(tableTitle, tasks) {
 			var taskhtml = '<div class="block-area" id="responsiveTable"><h3 class="block-title">' + tableTitle + '</h3>';
 			taskhtml += '<div class="table-responsive overflow"><table class="table table-bordered table-hover tile"><thead><tr>';
-			taskhtml += '<th>Status</th><th>Title</th><th>Created By</th><th>Date Greated</th><th>Last Updated</th>';
+			taskhtml += '<th>Status</th><th>Priority</th><th>Title</th><th>Created By</th><th>Date Greated</th><th>Last Updated</th>';
 			taskhtml += '</tr></thead><tbody>';
 			
 			var ongoingTasks = [];
-			
 			for (index = 0; index < tasks.length; index++) {
 				var task = tasks[index];
+				if (task.status === 'IN PROGRESS') {
+					ongoingTasks.push(task);
+				}
+				
 				taskhtml += '<tr><td>' + task.status + '</td>';
+				taskhtml += '<td>' + task.priority + '</td>';
 				taskhtml += '<td>' + task.title + '</td>';
 				taskhtml += '<td>' + task.creator.fullName + '</td>';
 				taskhtml += '<td>' + new Date(task.creationTime).toDateString() + '</td>';
@@ -179,13 +202,36 @@
 				}
 			}
 			
-			taskhtml += '</tbody></table></div></div>';
-			$('#tasklist').append(taskhtml);
-			
 			if (ongoingTasks.length >= 2) {
 				$("#alert-area").append('You have ' + ongoingTasks.length + ' tasks in execution at the moment. Think about finishing them before accepting any more tasks.');
 				$("#alert-area").show();
 			}
+			
+			taskhtml += '</tbody></table></div></div>';
+			return taskhtml;
+		}
+		
+		function generateCreatedByTasksTable(tableTitle, tasks) {
+			var taskhtml = '<div class="block-area" id="responsiveTable"><h3 class="block-title">' + tableTitle + '</h3>';
+			taskhtml += '<div class="table-responsive overflow"><table class="table table-bordered table-hover tile"><thead><tr>';
+			taskhtml += '<th>Status</th><th>Priority</th><th>Title</th><th>Assignee</th><th>Date Greated</th><th>Last Updated</th>';
+			taskhtml += '</tr></thead><tbody>';
+
+			for (index = 0; index < tasks.length; index++) {
+				var task = tasks[index];
+				if (!task.asignee || task.asignee.email !== task.creator.email) {
+					taskhtml += '<tr><td>' + task.status + '</td>';
+					taskhtml += '<td>' + task.priority + '</td>';
+					taskhtml += '<td>' + task.title + '</td>';
+					taskhtml += '<td>' + ((task.asignee) ? task.asignee.fullName : "") + '</td>';
+					taskhtml += '<td>' + new Date(task.creationTime).toDateString() + '</td>';
+					taskhtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td></tr>';
+				}
+				
+			}
+			
+			taskhtml += '</tbody></table></div></div>';
+			return taskhtml;
 		}
 		
 	</script>

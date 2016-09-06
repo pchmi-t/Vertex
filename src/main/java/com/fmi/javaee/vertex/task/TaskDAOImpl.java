@@ -71,4 +71,12 @@ class TaskDAOImpl implements TaskDAO {
 		return getByAsigneeQuery.getResultList();
 	}
 
+	@Override
+	public List<TaskEntity> getTasksByCreator(UserEntity creator) {
+		TypedQuery<TaskEntity> getByAsigneeQuery = entityManager.createNamedQuery(TaskEntity.GET_BY_CREATOR,
+				TaskEntity.class);
+		getByAsigneeQuery.setParameter("creator", creator);
+		return getByAsigneeQuery.getResultList();
+	}
+
 }
