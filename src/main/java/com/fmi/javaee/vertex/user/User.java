@@ -1,6 +1,6 @@
 package com.fmi.javaee.vertex.user;
 
-public class UserBean {
+public class User {
 
 	private String userId;
 	private String jobTitle;
@@ -10,7 +10,7 @@ public class UserBean {
 	private String email;
 	private Boolean isGod;
 
-	public UserBean(UserEntity entity) {
+	public User(UserEntity entity) {
 		this.userId = entity.getUserId();
 		this.jobTitle = entity.getJobTitle();
 		this.username = entity.getUsername();
@@ -20,7 +20,7 @@ public class UserBean {
 		this.isGod = entity.getIsGod();
 	}
 
-	public UserBean() {
+	public User() {
 	}
 
 	public String getUserId() {

@@ -1,6 +1,6 @@
 package com.fmi.javaee.vertex.event.compose;
 
-import com.fmi.javaee.vertex.task.monitoring.Component;
+import com.fmi.javaee.vertex.task.Component;
 
 public class EventFactory {
 

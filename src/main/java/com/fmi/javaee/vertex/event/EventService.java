@@ -13,12 +13,18 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.fmi.javaee.vertex.event.data.EventDAO;
-import com.fmi.javaee.vertex.factory.Factory;
+import com.google.inject.Inject;
 
 @Path("event")
 @Produces(MediaType.APPLICATION_JSON)
 public class EventService {
+	
+	private final EventDAO eventDAO;
+	
+	@Inject
+	public EventService(EventDAO eventDAO) {
+		this.eventDAO = eventDAO;
+	}
 	
 	@GET
 	public Response getSubscribedEventsOfUser(@Context HttpServletRequest request) {
@@ -27,7 +33,6 @@ public class EventService {
 			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
 		}
 		
-		EventDAO eventDAO = Factory.getInstance().getEventDAO();
 		Collection<EventEntity> eventsOfUser = eventDAO.getEventsOfUser(loggedEmail);
 		if (eventsOfUser.isEmpty()) {
 			return Response.status(HttpServletResponse.SC_NOT_FOUND).build();

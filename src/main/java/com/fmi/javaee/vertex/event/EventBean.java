@@ -2,7 +2,7 @@ package com.fmi.javaee.vertex.event;
 
 import java.util.Date;
 
-import com.fmi.javaee.vertex.task.monitoring.Component;
+import com.fmi.javaee.vertex.task.Component;
 
 public class EventBean {
 

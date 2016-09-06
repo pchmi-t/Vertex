@@ -16,14 +16,23 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.fmi.javaee.vertex.factory.Factory;
+import com.fmi.javaee.vertex.user.UserDAO;
 import com.fmi.javaee.vertex.user.UserEntity;
-import com.fmi.javaee.vertex.user.data.UserData;
+import com.google.inject.Inject;
 
 @Path("project")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ProjectService {
+	
+	private final UserDAO userDAO;
+	private final ProjectDAO projectDAO;
+	
+	@Inject
+	public ProjectService( UserDAO userDAO, ProjectDAO projectDAO) {
+		this.userDAO = userDAO;
+		this.projectDAO=  projectDAO;
+	}
 	
 	@GET
 	public Response getUserTasks(@Context HttpServletRequest request) {
@@ -32,7 +41,6 @@ public class ProjectService {
 			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
 		}
 		
-		ProjectDAO projectDAO = Factory.getInstance().getProjectDAO();
 		List<ProjectEntity> projectsOfUser = projectDAO.getProjectsOfUser(loggedEmail);
 		if (projectsOfUser.isEmpty()) {
 			return Response.status(HttpServletResponse.SC_NOT_FOUND).build();
@@ -58,10 +66,9 @@ public class ProjectService {
 		requestedAdmins.add(loggedEmail);
 		requestedMembers.addAll(requestedAdmins);
 		
-		UserData userData = Factory.getInstance().getUserData();
 		Set<UserEntity> members = new HashSet<>();
 		for (String memberEmail : requestedMembers) {
-			UserEntity member = userData.getUserByEmail(memberEmail);
+			UserEntity member = userDAO.getUserByEmail(memberEmail);
 			if (member == null) {
 				return Response.status(HttpServletResponse.SC_BAD_REQUEST).build();
 			}
@@ -70,14 +77,13 @@ public class ProjectService {
 		
 		Set<UserEntity> admins = new HashSet<>();
 		for (String adminEmail : requestedAdmins) {
-			UserEntity admin = userData.getUserByEmail(adminEmail);
+			UserEntity admin = userDAO.getUserByEmail(adminEmail);
 			if (admin == null) {
 				return Response.status(HttpServletResponse.SC_BAD_REQUEST).build();
 			}
 			admins.add(admin);
 		}
 		
-		ProjectDAO projectDAO = Factory.getInstance().getProjectDAO();
 		ProjectEntity createdProject = projectDAO.createProject(projectRequest, admins, members);
 		return Response.status(HttpServletResponse.SC_CREATED).entity(new ProjectBean(createdProject)).build();
 	}

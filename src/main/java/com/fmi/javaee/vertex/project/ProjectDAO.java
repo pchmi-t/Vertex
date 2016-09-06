@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.fmi.javaee.vertex.user.UserEntity;
 
+
 public interface ProjectDAO {
 	
 	public List<ProjectEntity> getProjectsOfUser(String userEmail);

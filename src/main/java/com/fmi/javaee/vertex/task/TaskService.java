@@ -1,6 +1,5 @@
 package com.fmi.javaee.vertex.task;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,70 +17,75 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.fmi.javaee.vertex.factory.Factory;
 import com.fmi.javaee.vertex.project.ProjectDAO;
 import com.fmi.javaee.vertex.project.ProjectEntity;
-import com.fmi.javaee.vertex.task.data.TaskData;
+import com.fmi.javaee.vertex.user.UserDAO;
 import com.fmi.javaee.vertex.user.UserEntity;
-import com.fmi.javaee.vertex.user.data.UserData;
+import com.google.inject.Inject;
 
 @Path("task")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class TaskService {
 
-	private TaskData taskData = Factory.getInstance().getTaskData();
-	
+	private final TaskDAO taskDAO;
+	private final UserDAO userDAO;
+	private final ProjectDAO projectDAO;
+
+	@Inject
+	public TaskService(TaskDAO taskDAO, UserDAO userDAO, ProjectDAO projectDAO) {
+		this.projectDAO = projectDAO;
+		this.taskDAO = taskDAO;
+		this.userDAO = userDAO;
+	}
+
 	@POST
 	@Path("project/{projectId}")
-	public Response createTask(@Context HttpServletRequest request, TaskBean taskRequest, @PathParam("projectId") String projectId) {
-		ProjectDAO projectDAO = Factory.getInstance().getProjectDAO();
+	public Response createTask(@Context HttpServletRequest request, TaskEntity taskRequest,
+			@PathParam("projectId") String projectId) {
 		ProjectEntity project = projectDAO.getProject(projectId);
-		
+
 		if (project == null) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
-		
+
 		String loggedEmail = request.getRemoteUser();
 		if (loggedEmail == null) {
 			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
 		}
-		UserData userData = Factory.getInstance().getUserData();
-		UserEntity creator = userData.getUserByEmail(loggedEmail);
-		
+		UserEntity creator = userDAO.getUserByEmail(loggedEmail);
+
 		taskRequest.setProject(project);
 		taskRequest.setCreator(creator);
-		
-		TaskBean createdTask = taskData.createTask(taskRequest);
+
+		TaskEntity createdTask = taskDAO.createTask(taskRequest);
 		if (createdTask != null) {
 			return Response.ok().entity(createdTask).build();
 		} else {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 	}
-	
-	
+
 	@POST
-	public Response createTask(TaskBean task) {
-		TaskBean createdTask = taskData.createTask(task);
+	public Response createTask(TaskEntity task) {
+		TaskEntity createdTask = taskDAO.createTask(task);
 		if (createdTask != null) {
 			return Response.ok().entity(createdTask).build();
 		} else {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 	}
-	
+
 	@PUT
 	@Path("{taskId}/{username}")
-	public Response assignTask(@PathParam("taskId") String taskId, 
-			@PathParam("username") String username) {
-		//TODO TBD
+	public Response assignTask(@PathParam("taskId") String taskId, @PathParam("username") String username) {
+		// TODO TBD
 		return null;
 	}
-	
+
 	@PUT
-	public Response updateOrUpdateTask(TaskBean task) {
-		TaskBean updatedTask = taskData.updateTask(task);
+	public Response updateOrUpdateTask(TaskEntity task) {
+		TaskEntity updatedTask = taskDAO.updateTask(task);
 		if (updatedTask != null) {
 			return Response.ok().entity(updatedTask).build();
 		} else {
@@ -92,23 +96,22 @@ public class TaskService {
 	@GET
 	@Path("/asignee/{email}")
 	public Response getTaskByAssignee(@PathParam("email") String email) {
-		UserData userData = Factory.getInstance().getUserData();
-		UserEntity user = userData.getUserByEmail(email);
+		UserEntity user = userDAO.getUserByEmail(email);
 		if (user == null) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
-		List<TaskBean> usersTasks = taskData.getTasksByAssignee(user);
+		List<TaskEntity> usersTasks = taskDAO.getTasksByAssignee(user);
 		if (usersTasks != null && !usersTasks.isEmpty()) {
 			return Response.ok().entity(usersTasks).build();
 		} else {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 	}
-	
+
 	@GET
-	public Response getTasksByCriteria(@QueryParam("username") String username, 
-			@QueryParam("limit") Integer limit, @QueryParam("offset") Integer offset) {
-		//TODO TBD
+	public Response getTasksByCriteria(@QueryParam("username") String username, @QueryParam("limit") Integer limit,
+			@QueryParam("offset") Integer offset) {
+		// TODO TBD
 		return null;
 	}
 }

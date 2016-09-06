@@ -17,10 +17,6 @@ import javax.security.auth.spi.LoginModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fmi.javaee.vertex.factory.Factory;
-import com.fmi.javaee.vertex.user.UserEntity;
-import com.fmi.javaee.vertex.user.data.UserData;
-
 public class VertexLoginModule implements LoginModule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(VertexLoginModule.class);
@@ -69,14 +65,15 @@ public class VertexLoginModule implements LoginModule {
 
 	private boolean login(String email, char[] password) {
 		LOG.info("Checking the credentials of user [{}]", email);
-		UserData userDAO = Factory.getInstance().getUserData();
-		UserEntity user = userDAO.getUser(email, password);
-		if (user == null) {
+		UserAuthentication authentication;
+		try {
+			authentication = AuthenticationProvider.getInstance().authenticate(email, password);
+			this.userPrincipal = new UserPrincipal(authentication.getUsername());
+			this.userRoles.add(new RolePrincipal(VERTEX_USER_DEFAULT_ROLE));
+			return true;
+		} catch (AuthenticationException e) {
 			return false;
 		}
-		this.userPrincipal = new UserPrincipal(user.getUsername());
-		this.userRoles.add(new RolePrincipal(VERTEX_USER_DEFAULT_ROLE));
-		return true;
 	}
 
 	@Override

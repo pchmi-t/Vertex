@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fmi.javaee.vertex.task.TaskBean;
-import com.fmi.javaee.vertex.user.UserBean;
+import com.fmi.javaee.vertex.task.TaskEntity;
+import com.fmi.javaee.vertex.user.User;
 import com.fmi.javaee.vertex.user.UserEntity;
 
 public class ProjectBean {
@@ -14,9 +14,9 @@ public class ProjectBean {
 	private String projectName;
 	private String projectDescription;
 	private Date creationTime;
-	private Set<UserBean> members = new HashSet<>();
-	private Set<UserBean> administrators = new HashSet<>();
-	private Set<TaskBean> tasks = new HashSet<>();
+	private Set<User> members = new HashSet<>();
+	private Set<User> administrators = new HashSet<>();
+	private Set<TaskEntity> tasks = new HashSet<>();
 
 	public ProjectBean() {
 	}
@@ -27,11 +27,11 @@ public class ProjectBean {
 		this.projectDescription = entity.getProjectDescription();
 		this.creationTime = entity.getCreationTime();
 		for (UserEntity adminEntity : entity.getAdministrators()) {
-			this.administrators.add(new UserBean(adminEntity));
+			this.administrators.add(new User(adminEntity));
 		}
 		
 		for (UserEntity memberEntity : entity.getMembers()) {
-			this.members.add(new UserBean(memberEntity));
+			this.members.add(new User(memberEntity));
 		}
 		this.tasks = entity.getTasks();
 
@@ -53,27 +53,27 @@ public class ProjectBean {
 		this.creationTime = creationTime;
 	}
 
-	public Set<UserBean> getMembers() {
+	public Set<User> getMembers() {
 		return members;
 	}
 
-	public void setMembers(Set<UserBean> members) {
+	public void setMembers(Set<User> members) {
 		this.members = members;
 	}
 
-	public Set<UserBean> getAdministrators() {
+	public Set<User> getAdministrators() {
 		return administrators;
 	}
 
-	public void setAdministrators(Set<UserBean> administrators) {
+	public void setAdministrators(Set<User> administrators) {
 		this.administrators = administrators;
 	}
 
-	public Set<TaskBean> getTasks() {
+	public Set<TaskEntity> getTasks() {
 		return tasks;
 	}
 
-	public void setTasks(Set<TaskBean> tasks) {
+	public void setTasks(Set<TaskEntity> tasks) {
 		this.tasks = tasks;
 	}
 

@@ -21,15 +21,17 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fmi.javaee.vertex.task.TaskBean;
-import com.fmi.javaee.vertex.task.monitoring.Component;
+import com.fmi.javaee.vertex.task.Component;
+import com.fmi.javaee.vertex.task.TaskEntity;
 import com.fmi.javaee.vertex.user.UserEntity;
 
-@Table(name = "event")
 @Entity
+@Table(name = "event")
 @NamedQueries({
-		@NamedQuery(query = "select e from EventEntity e join fetch e.refUser where e.refUser.email = :email", name = "getEventsByUser") })
+		@NamedQuery(query = "select e from EventEntity e join fetch e.refUser where e.refUser.email = :email", name = EventEntity.GET_BY_USER) })
 public class EventEntity {
+
+	static final String GET_BY_USER = "getEventsByUser";
 
 	private String eventId;
 
@@ -37,10 +39,10 @@ public class EventEntity {
 
 	private String description;
 
-	private TaskBean refTask;
+	private TaskEntity refTask;
 
 	private UserEntity refUser;
-	
+
 	private Component eventComponent;
 
 	@Id
@@ -80,11 +82,11 @@ public class EventEntity {
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "task_id")
 	@JsonProperty
-	public TaskBean getRefTask() {
+	public TaskEntity getRefTask() {
 		return refTask;
 	}
 
-	public void setRefTask(TaskBean refTask) {
+	public void setRefTask(TaskEntity refTask) {
 		this.refTask = refTask;
 	}
 
@@ -100,7 +102,7 @@ public class EventEntity {
 	}
 
 	@JsonProperty
-	@Column(name="event_component")
+	@Column(name = "event_component")
 	@Enumerated(EnumType.STRING)
 	public Component getEventComponent() {
 		return eventComponent;

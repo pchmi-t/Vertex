@@ -1,7 +1,6 @@
 package com.fmi.javaee.vertex.user;
 
 import java.beans.Transient;
-import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +14,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -25,32 +26,63 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.project.ProjectEntity;
-import com.fmi.javaee.vertex.task.TaskBean;
+import com.fmi.javaee.vertex.task.TaskEntity;
 
 @Entity
 @Table(name = "Users")
-public class UserEntity implements Serializable {
+@NamedQueries({ @NamedQuery(name = UserEntity.GET_ALL_USERS, query = UserEntity.GET_ALL_USERS_QUERY),
+		@NamedQuery(name = UserEntity.GET_BY_USERNAME, query = UserEntity.GET_BY_USERNAME_QUERY),
+		@NamedQuery(name = UserEntity.GET_BY_EMAIL, query = UserEntity.GET_BY_EMAIL_QUERY),
+		@NamedQuery(name = UserEntity.GET_BY_EMAIL_PASS, query = UserEntity.GET_BY_EMAIL_PASS_QUERY) })
 
-	private static final long serialVersionUID = 1L;
+public class UserEntity {
 
-	// Persisted properties
+	static final String GET_ALL_USERS = "getAllUsers";
+
+	static final String GET_ALL_USERS_QUERY = "SELECT u FROM UserEntity u";
+	
+	static final String GET_BY_EMAIL = "getByEmail";
+	
+	static final String GET_BY_EMAIL_QUERY = "SELECT u FROM UserEntity u WHERE u.email = :email";
+
+	static final String GET_BY_USERNAME = "getByUsername";
+
+	static final String GET_BY_USERNAME_QUERY = "SELECT u FROM UserEntity u WHERE u.username = :username";
+
+	static final String GET_BY_EMAIL_PASS = "getByEmailAndPass";
+
+	static final String GET_BY_EMAIL_PASS_QUERY = "SELECT u FROM UserEntity u WHERE u.email = :email AND u.password = :password";
+
 	private String userId;
+
 	private String jobTitle;
+
 	private String username;
+
 	private String fullName;
+
 	private Gender gender;
+
 	private String password;
+
 	private String email;
+
 	private Boolean isGod;
-	private Collection<TaskBean> assignedTasks = new ArrayList<>();
+
+	private Collection<TaskEntity> assignedTasks = new ArrayList<>();
+
 	private Collection<ProjectEntity> memberProjects = new ArrayList<>();
+
 	private Collection<ProjectEntity> adminProjects = new ArrayList<>();
 
 	private Duration averageTaskEcecutionTime;
 
 	private Duration averageInvolvementResponseTime;
+
 	private int projectsInvolvedCount;
+
 	private long tasksExecutedCount;
+
 	private long taskInvolvementsCount;
 
 	@Column(name = "password")
@@ -187,11 +219,11 @@ public class UserEntity implements Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "asignee", cascade = CascadeType.ALL)
-	public Collection<TaskBean> getAssignedTasks() {
+	public Collection<TaskEntity> getAssignedTasks() {
 		return assignedTasks;
 	}
 
-	public void setAssignedTasks(Collection<TaskBean> assignedTasks) {
+	public void setAssignedTasks(Collection<TaskEntity> assignedTasks) {
 		this.assignedTasks = assignedTasks;
 	}
 

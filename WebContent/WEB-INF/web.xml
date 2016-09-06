@@ -5,22 +5,19 @@
 	id="WebApp_ID" version="3.0">
 	<display-name>Vertex</display-name>
 
-	<servlet>
-		<servlet-name>javax.ws.rs.core.Application</servlet-name>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>javax.ws.rs.core.Application</servlet-name>
-		<url-pattern>/api/*</url-pattern>
-	</servlet-mapping>
+	<listener>
+		<listener-class>com.fmi.javaee.vertex.guice.ApplicationInitializer</listener-class>
+	</listener>
 
-	<servlet>
-		<servlet-name>Logout Servlet</servlet-name>
-		<servlet-class>com.fmi.javaee.vertex.security.LogoutServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Logout Servlet</servlet-name>
-		<url-pattern>/logout</url-pattern>
-	</servlet-mapping>
+	<filter>
+		<filter-name>guiceFilter</filter-name>
+		<filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>guiceFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<security-constraint>
 		<display-name>SecurityConstraint</display-name>
@@ -59,10 +56,4 @@
 		<location>/404.html</location>
 	</error-page>
 
-	<!-- Listener for scheduler job for sending emails. -->
-	<!-- <listener> -->
-	<!-- <listener-class> -->
-	<!-- com.fmi.javee.vertex.scheduler.SchedulerRunner -->
-	<!-- </listener-class> -->
-	<!-- </listener> -->
 </web-app>

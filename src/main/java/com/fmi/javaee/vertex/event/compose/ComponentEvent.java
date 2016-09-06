@@ -1,7 +1,9 @@
 package com.fmi.javaee.vertex.event.compose;
 
-import com.fmi.javaee.vertex.task.TaskBean;
+import com.fmi.javaee.vertex.task.TaskEntity;
 
 public interface ComponentEvent {
-	void composeEvent(TaskBean task);
+	
+	void composeEvent(TaskEntity task);
+
 }
