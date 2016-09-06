@@ -233,7 +233,7 @@
 		
 		if (isUserGod()) {
 			console.log(selectedProject.projectId);
-			detailsHtml += '<a href="/vertex/create-task.html?projectId=' + selectedProject.projectId + '"><a href="/vertex/create-task.html" class="btn btn-sm btn-block">Create a New Task</a>';
+			detailsHtml += '<a href="/vertex/create-task.html?projectId=' + selectedProject.projectId + '" class="btn btn-sm btn-block">Create a New Task</a>';
 		}
 		$('#projectdetails').html(detailsHtml);
 	}

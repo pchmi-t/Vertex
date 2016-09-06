@@ -60,7 +60,7 @@ public class TaskService {
 
 		TaskEntity createdTask = taskDAO.createTask(taskRequest);
 		if (createdTask != null) {
-			return Response.ok().entity(createdTask).build();
+			return Response.ok().entity(new Task(createdTask)).build();
 		} else {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
@@ -70,7 +70,7 @@ public class TaskService {
 	public Response createTask(TaskEntity task) {
 		TaskEntity createdTask = taskDAO.createTask(task);
 		if (createdTask != null) {
-			return Response.ok().entity(createdTask).build();
+			return Response.ok().entity(new Task(createdTask)).build();
 		} else {
 			return Response.status(Status.BAD_REQUEST).build();
 		}

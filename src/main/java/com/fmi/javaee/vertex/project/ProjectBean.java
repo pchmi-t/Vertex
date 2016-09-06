@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fmi.javaee.vertex.task.Task;
 import com.fmi.javaee.vertex.task.TaskEntity;
 import com.fmi.javaee.vertex.user.User;
 import com.fmi.javaee.vertex.user.UserEntity;
@@ -16,7 +17,7 @@ public class ProjectBean {
 	private Date creationTime;
 	private Set<User> members = new HashSet<>();
 	private Set<User> administrators = new HashSet<>();
-	private Set<TaskEntity> tasks = new HashSet<>();
+	private Set<Task> tasks = new HashSet<>();
 
 	public ProjectBean() {
 	}
@@ -29,12 +30,15 @@ public class ProjectBean {
 		for (UserEntity adminEntity : entity.getAdministrators()) {
 			this.administrators.add(new User(adminEntity));
 		}
-		
+
 		for (UserEntity memberEntity : entity.getMembers()) {
 			this.members.add(new User(memberEntity));
 		}
-		this.tasks = entity.getTasks();
-
+		
+		tasks = new HashSet<Task>();
+		for (TaskEntity task : entity.getTasks()) {
+			tasks.add(new Task(task));
+		}
 	}
 
 	public String getProjectId() {
@@ -69,11 +73,11 @@ public class ProjectBean {
 		this.administrators = administrators;
 	}
 
-	public Set<TaskEntity> getTasks() {
+	public Set<Task> getTasks() {
 		return tasks;
 	}
 
-	public void setTasks(Set<TaskEntity> tasks) {
+	public void setTasks(Set<Task> tasks) {
 		this.tasks = tasks;
 	}
 
@@ -92,7 +96,5 @@ public class ProjectBean {
 	public void setProjectDescription(String projectDescription) {
 		this.projectDescription = projectDescription;
 	}
-	
-	
 
 }
