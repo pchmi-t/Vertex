@@ -100,6 +100,8 @@
 				<div id="tasklist"></div>
 				<div id="created-tasklist"></div>
 			</div>
+			
+			<div id="task-modals"></div>
 
 		</section>
 	</section>
@@ -123,11 +125,13 @@
 	<!-- UX -->
 	<script src="/vertex/resources/js/scroll.min.js"></script>
 	<!-- Custom Scrollbar -->
-
+	<script src="/vertex/resources/js/markdown.min.js"></script>
 	<!-- Other -->
 	<script src="/vertex/resources/js/calendar.min.js"></script>
+	
 	<!-- Calendar -->
 	<script src="/vertex/resources/js/feeds.min.js"></script>
+	
 	<!-- News Feeds -->
 
 
@@ -181,25 +185,23 @@
 			var taskhtml = '<div class="block-area" id="responsiveTable"><h3 class="block-title">' + tableTitle + '</h3>';
 			taskhtml += '<div class="table-responsive overflow"><table class="table table-bordered table-hover tile"><thead><tr>';
 			taskhtml += '<th>Status</th><th>Priority</th><th>Title</th><th>Created By</th><th>Date Greated</th><th>Last Updated</th>';
-			taskhtml += '</tr></thead><tbody>';
+			taskhtml += '<th>Edit</th></tr></thead><tbody>';
 			
 			var ongoingTasks = [];
 			for (index = 0; index < tasks.length; index++) {
 				var task = tasks[index];
-				if (task.status === 'IN PROGRESS') {
-					ongoingTasks.push(task);
-				}
-				
 				taskhtml += '<tr><td>' + task.status + '</td>';
 				taskhtml += '<td>' + task.priority + '</td>';
 				taskhtml += '<td>' + task.title + '</td>';
 				taskhtml += '<td>' + task.creator.fullName + '</td>';
 				taskhtml += '<td>' + new Date(task.creationTime).toDateString() + '</td>';
-				taskhtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td></tr>';
+				taskhtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td>';
+				taskhtml += '<td><a data-toggle="modal" href="#' + task.taskId + '"><span class="icon">&#61952;</span></a></td></tr>';
 				
 				if (task.status === 'IN_PROGRESS') {
 					ongoingTasks.push(task);
 				}
+				createTaskModal(task);
 			}
 			
 			if (ongoingTasks.length >= 2) {
@@ -215,7 +217,7 @@
 			var taskhtml = '<div class="block-area" id="responsiveTable"><h3 class="block-title">' + tableTitle + '</h3>';
 			taskhtml += '<div class="table-responsive overflow"><table class="table table-bordered table-hover tile"><thead><tr>';
 			taskhtml += '<th>Status</th><th>Priority</th><th>Title</th><th>Assignee</th><th>Date Greated</th><th>Last Updated</th>';
-			taskhtml += '</tr></thead><tbody>';
+			taskhtml += '<th>Edit</th></tr></thead><tbody>';
 
 			for (index = 0; index < tasks.length; index++) {
 				var task = tasks[index];
@@ -225,13 +227,27 @@
 					taskhtml += '<td>' + task.title + '</td>';
 					taskhtml += '<td>' + ((task.asignee) ? task.asignee.fullName : "") + '</td>';
 					taskhtml += '<td>' + new Date(task.creationTime).toDateString() + '</td>';
-					taskhtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td></tr>';
+					taskhtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td>';
+					taskhtml += '<td><a data-toggle="modal" href="#' + task.taskId + '"><span class="icon">&#61952;</span></a></td></tr>';
+				
+					createTaskModal(task);
 				}
 				
 			}
 			
 			taskhtml += '</tbody></table></div></div>';
 			return taskhtml;
+		}
+		
+		function createTaskModal(task) {
+			var editHtml = '<div class="modal fade" id="' + task.taskId + '" tabindex="-1" role="dialog" aria-hidden="true">';
+			editHtml += '<div class="modal-dialog modal-lg"><div class="modal-dialog modal-lg"><div class="modal-content">';
+			editHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+			editHtml += '<h4 class="modal-title">'  + task.title + '</h4></div>';
+			editHtml += '<div class="modal-body"><p>' + task.definition + '</p>'
+			editHtml += '</modal-body><button type="submit" id="updatetaskbtn" class="btn btn-sm">Save changes</button>';
+			editHtml += '<button type="button" class="btn btn-sm" data-dismiss="modal">Close</button></div></div></div></div>';
+			$("#task-modals").append(editHtml);
 		}
 		
 	</script>
