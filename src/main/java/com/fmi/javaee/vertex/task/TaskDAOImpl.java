@@ -11,15 +11,16 @@ import org.apache.commons.lang3.StringUtils;
 import com.fmi.javaee.vertex.event.compose.EventFactory;
 import com.fmi.javaee.vertex.user.UserEntity;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
 class TaskDAOImpl implements TaskDAO {
 
-	private final EntityManager entityManager;
+	private final Provider<EntityManager> entityManagerProvider;
 
 	@Inject
-	TaskDAOImpl(EntityManager entityManager) {
-		this.entityManager = entityManager;
+	TaskDAOImpl(Provider<EntityManager> entityManagerProvider) {
+		this.entityManagerProvider = entityManagerProvider;
 	}
 
 	@Override
@@ -30,6 +31,7 @@ class TaskDAOImpl implements TaskDAO {
 		task.setLastModificator(task.getCreator());
 		task.setStatus(Status.NEW);
 
+		EntityManager entityManager = entityManagerProvider.get();
 		entityManager.persist(task);
 		return task;
 	}
@@ -38,6 +40,7 @@ class TaskDAOImpl implements TaskDAO {
 	@Transactional
 	public TaskEntity updateTask(TaskEntity task) {
 		TaskEntity oldTask = getTaskById(task.getTaskId());
+		EntityManager entityManager = entityManagerProvider.get();
 		TaskEntity updatedTask = entityManager.merge(task);
 		createEvents(oldTask, updatedTask);
 		return updatedTask;
@@ -60,11 +63,13 @@ class TaskDAOImpl implements TaskDAO {
 
 	@Override
 	public TaskEntity getTaskById(String id) {
+		EntityManager entityManager = entityManagerProvider.get();
 		return entityManager.find(TaskEntity.class, id);
 	}
 
 	@Override
 	public List<TaskEntity> getTasksByAssignee(UserEntity asignee) {
+		EntityManager entityManager = entityManagerProvider.get();
 		TypedQuery<TaskEntity> getByAsigneeQuery = entityManager.createNamedQuery(TaskEntity.GET_BY_ASIGNEE,
 				TaskEntity.class);
 		getByAsigneeQuery.setParameter("asignee", asignee);
@@ -73,6 +78,7 @@ class TaskDAOImpl implements TaskDAO {
 
 	@Override
 	public List<TaskEntity> getTasksByCreator(UserEntity creator) {
+		EntityManager entityManager = entityManagerProvider.get();
 		TypedQuery<TaskEntity> getByAsigneeQuery = entityManager.createNamedQuery(TaskEntity.GET_BY_CREATOR,
 				TaskEntity.class);
 		getByAsigneeQuery.setParameter("creator", creator);

@@ -216,7 +216,7 @@
 			detailsHtml += '<div class="block-area" id="responsiveTable">';
 			detailsHtml += '<div class="table-responsive overflow"><table class="table table-bordered table-hover tile"><thead><tr>';
 			detailsHtml += '<th>Status</th><th>Priority</th><th>Title</th><th>Created By</th><th>Assignee</th><th>Date Greated</th><th>Last Updated</th>';
-			detailsHtml += '</tr></thead><tbody>';
+			detailsHtml += '<th><span class="icon">&#61886;</span>  Edit</th></tr></thead><tbody>';
 			
 			var tasks = selectedProject.tasks;
 			for (index = 0; index < tasks.length; index++) {
@@ -229,7 +229,8 @@
 					detailsHtml += '<td>' + ((task.creator) ? task.creator.fullName : " ") + '</td>';
 					detailsHtml += '<td>' + ((task.asignee) ? task.asignee.fullName : " ") + '</td>';
 					detailsHtml += '<td>' + new Date(task.creationTime).toDateString() + '</td>';
-					detailsHtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td></tr>';
+					detailsHtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td><td>';
+					detailsHtml += generateActionsHtml(task);
 				}
 			}
 			
@@ -247,10 +248,41 @@
 		detailsHtml += '</div>';
 		
 		if (isUserGod()) {
-			console.log(selectedProject.projectId);
 			detailsHtml += '<a href="/vertex/create-task.html?projectId=' + selectedProject.projectId + '" class="btn btn-sm btn-block">Create a New Task</a>';
 		}
 		$('#projectdetails').html(detailsHtml);
+		
+		$(".assignself").click(function(event) {
+			var assignRequest = { "assignee": sessionStorage.getItem('userEmail') };
+			
+			$.ajax({
+				url: "/vertex/api/task/" + event.target.id +  "/assign",
+				type : "PUT",
+				contentType: "application/json",
+				data: JSON.stringify(assignRequest),
+				success : function (jqXHR){
+					alert("Task assignment successful! Will reload the page.");
+					location.reload();
+				},
+				error : function (jqXHR){
+					alert('Unfortunately, the task could not be assigned to user ' + sessionStorage.getItem('userEmail'));
+				}
+			});	
+		});
+	}
+	
+	function generateActionsHtml(task) {
+		var actionsHtml = '<div class="btn-group"><button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown">';
+		actionsHtml += 'Actions <span class="caret"></span></button><ul class="dropdown-menu">';
+		actionsHtml += '<li><a class="assignself" id="' + task.taskId +  '">Assign to Me</a></li>';
+		if (isUserGod()) {
+			actionsHtml += '<li><a href="#">Assign</a></li>';
+			actionsHtml += '<li><a href="#">Edit Details</a>';
+			actionsHtml += '</li><li class="divider">';
+			actionsHtml += '</li><li><a href="#"><span class="icon">&#61754;</span> Delete Task</a></li>';
+		}
+		actionsHtml += '</ul></div>';
+		return actionsHtml;
 	}
 	
 	</script>

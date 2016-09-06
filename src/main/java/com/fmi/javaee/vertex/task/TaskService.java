@@ -83,10 +83,26 @@ public class TaskService {
 	}
 
 	@PUT
-	@Path("{taskId}/{username}")
-	public Response assignTask(@PathParam("taskId") String taskId, @PathParam("username") String username) {
-		// TODO TBD
-		return null;
+	@Path("{taskId}/assign")
+	public Response assignTask(@PathParam("taskId") String taskId, TaskAssignRequest taskAssignRequest) {
+		String requestedAssignee = taskAssignRequest.getAssignee();
+		
+		if (taskAssignRequest == null || requestedAssignee == null) {
+			LOGGER.error("Received invalid task assignment request with missing assignee");
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		
+		UserEntity assignee = userDAO.getUserByEmail(requestedAssignee);
+		if (assignee == null) {
+			LOGGER.error("Invalid user in task assignment request: [{}]", requestedAssignee);
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		
+		TaskEntity task = taskDAO.getTaskById(taskId);
+		LOGGER.debug("Assigning task [{}] to user [{}]", taskId, requestedAssignee);
+		task.setAsignee(assignee);
+		taskDAO.updateTask(task);
+		return Response.ok().build();
 	}
 
 	@PUT
