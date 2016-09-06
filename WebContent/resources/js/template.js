@@ -27,6 +27,12 @@ function isUserGod() {
 }
 
 function getUser() {
+	$("#signout").click(function() {
+		sessionStorage.removeItem('userFullName');
+		sessionStorage.removeItem('userEmail');
+		sessionStorage.removeItem('userGender');
+	});
+	
 	var userFullName = sessionStorage.getItem('userFullName');
 	var userEmail = sessionStorage.getItem('userEmail');
 	var userGender = sessionStorage.getItem('userGender');
