@@ -1,5 +1,6 @@
 package com.fmi.javaee.vertex.task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fmi.javaee.vertex.project.ProjectDAO;
 import com.fmi.javaee.vertex.project.ProjectEntity;
 import com.fmi.javaee.vertex.user.UserDAO;
@@ -27,6 +31,8 @@ import com.google.inject.Inject;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class TaskService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskService.class);
 
 	private final TaskDAO taskDAO;
 	private final UserDAO userDAO;
@@ -94,15 +100,27 @@ public class TaskService {
 	}
 
 	@GET
-	@Path("/asignee/{email}")
-	public Response getTaskByAssignee(@PathParam("email") String email) {
-		UserEntity user = userDAO.getUserByEmail(email);
-		if (user == null) {
-			return Response.status(Status.BAD_REQUEST).build();
+	@Path("/asignee/")
+	public Response getTaskByAssignee(@Context HttpServletRequest request) {
+		String loggedEmail = request.getRemoteUser();
+		if (loggedEmail == null) {
+			LOGGER.error("Failed attempt to retrieve user tasks!");
+			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
 		}
-		List<TaskEntity> usersTasks = taskDAO.getTasksByAssignee(user);
-		if (usersTasks != null && !usersTasks.isEmpty()) {
-			return Response.ok().entity(usersTasks).build();
+		
+		LOGGER.info("Retrieving all tasks of user [{}]", loggedEmail);
+		UserEntity user = userDAO.getUserByEmail(loggedEmail);
+		
+		List<TaskEntity> usersTaskEntities = taskDAO.getTasksByAssignee(user);
+		if (usersTaskEntities != null && !usersTaskEntities.isEmpty()) {
+			
+			List<Task> tasks = new ArrayList<>();
+			for (TaskEntity task : usersTaskEntities) {
+				tasks.add(new Task(task));
+			}
+
+			LOGGER.debug("Retrieved tasks of user [{}]: {}", loggedEmail, tasks);
+			return Response.ok().entity(tasks).build();
 		} else {
 			return Response.status(Status.NOT_FOUND).build();
 		}

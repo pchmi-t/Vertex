@@ -213,12 +213,27 @@
 		if (selectedProject.tasks.length == 0) {
 			detailsHtml+= '<div class="media"><div class="media-body">There are no ongoing tasks.</div></div>';
 		} else {
-			$.each(selectedProject.tasks, function(index, task) {
-				if (task.status != 'RESOLVED') {
-					detailsHtml+= '<div class="media-body"><div class="media-body">' + task.definition + '</div></div>';
-					
+			detailsHtml += '<div class="block-area" id="responsiveTable">';
+			detailsHtml += '<div class="table-responsive overflow"><table class="table table-bordered table-hover tile"><thead><tr>';
+			detailsHtml += '<th>Status</th><th>Priority</th><th>Title</th><th>Created By</th><th>Assignee</th><th>Date Greated</th><th>Last Updated</th>';
+			detailsHtml += '</tr></thead><tbody>';
+			
+			var tasks = selectedProject.tasks;
+			for (index = 0; index < tasks.length; index++) {
+				var task = tasks[index];
+				
+				if (task.status !== 'RESOLVED') {
+					detailsHtml += '<tr><td>' + task.status + '</td>';
+					detailsHtml += '<td>' + task.priority + '</td>';
+					detailsHtml += '<td>' + task.title + '</td>';
+					detailsHtml += '<td>' + ((task.creator) ? task.creator.fullName : " ") + '</td>';
+					detailsHtml += '<td>' + ((task.asignee) ? task.asignee.fullName : " ") + '</td>';
+					detailsHtml += '<td>' + new Date(task.creationTime).toDateString() + '</td>';
+					detailsHtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td></tr>';
 				}
-			});
+			}
+			
+			detailsHtml += '</tbody></table></div></div>';
 		}
 		detailsHtml += '<h4 class="page-title b-0">Members</h4><div class="listview list-container">';
 		$.each(selectedProject.members, function(index, member) {

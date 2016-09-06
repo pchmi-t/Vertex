@@ -62,8 +62,7 @@
 					<div class="list-group list-group-flat m-t-15">
 						<a class="list-group-item active">Tasks<span id="tasksCount"
 							class="badge badge-trp">X</span></a> 
-							<a href="#" class="list-group-item">
-							<span class="message-tag progress-bar-info"></span>In Progress</a>
+							<a href="#" class="list-group-item"><span class="message-tag progress-bar-info"></span>In Progress</a>
 							<a href="#" class="list-group-item"><span class="message-tag progress-bar-success"></span>Resolved</a>
 							<a href="#" class="list-group-item"><span class="message-tag progress-bar-danger"></span>Blocked</a>
 							<a href="#" class="list-group-item"><span class="message-tag progress-bar-warning"></span>Accepted</a>
@@ -85,28 +84,19 @@
 
 		<!-- Content -->
 		<section id="content" class="container">
-
-			<h4 class="page-title b-0">My Tasks</h4>
-
+		
+            <div id="alert-area" class="alert alert-danger alert-dismissable fade in" hidden=true>
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            </div>
+		
 			<div class="message-list list-container">
 				<header class="listview-header media">
-					<input type="checkbox" class="pull-left list-parent-check" value="">
-
-					<ul class="list-inline pull-right m-t-5 m-b-0">
-					</ul>
-
 					<ul class="list-inline list-mass-actions pull-left">
-						<li><a href="" title="Refresh" class="tooltips"> <i
-								class="sa-list-refresh"></i>
-						</a></li>
+						<li><a href="" title="Refresh" class="tooltips"> <i class="sa-list-refresh"></i></a></li>
 					</ul>
-
-					<input class="input-sm col-md-4 pull-right message-search"
-						type="text" placeholder="Search....">
-
+					<ul id="page-custom-title" class="list-inline page-title b-0"><input class="list-inline input-sm col-md-4 pull-right message-search" type="text" placeholder="Search...."></ul>
 					<div class="clearfix"></div>
 				</header>
-
 				<div id="tasklist"></div>
 			</div>
 
@@ -148,15 +138,15 @@
 		$(document).ready(function() {
 			getUser();
 			getEvents();
-
-			var userEmail = sessionStorage.getItem('userEmail');
 			
 			$.ajax({
-				url : "/vertex/api/task/asignee/" + userEmail,
+				url : "/vertex/api/task/asignee/",
 				type : "GET",
 				success : function(jqXHR) {
-					$.each(jqXHR, listTask);
-					$("#tasksCount").text(jqXHR.length);
+					var tCount = jqXHR.length;
+					showTasks("Assigned Tasks", jqXHR);
+					$("#page-custom-title").append($("#userFullName").text() + "'s Tasks");
+					$("#tasksCount").text(tCount);
 				},
 				error : function(jqXHR) {
 					if (jqXHR.status == 404) {
@@ -168,18 +158,36 @@
 			});
 		});
 
-		function listTask(index, task) {
-			var taskhtml = '<div class="media"><a class="media-body" href="task-details.html?taskId='
-					+ task.taskId + '"><div class="pull-left list-title">';
-			taskhtml += '<span class="t-overflow">'
-			task.creator.fullName + '</span></div>';
-			taskhtml += '<div class="pull-right list-date">'
-					+ new Date(task.creationTime).toDateString() + '</div>';
-			taskhtml += '<div class="media-body hidden-xs"><span class="t-overflow">';
-			taskhtml += task.title + '</span></div></a></div>'
-
+		function showTasks(tableTitle, tasks) {
+			var taskhtml = '<div class="block-area" id="responsiveTable"><h3 class="block-title">' + tableTitle + '</h3>';
+			taskhtml += '<div class="table-responsive overflow"><table class="table table-bordered table-hover tile"><thead><tr>';
+			taskhtml += '<th>Status</th><th>Title</th><th>Created By</th><th>Date Greated</th><th>Last Updated</th>';
+			taskhtml += '</tr></thead><tbody>';
+			
+			var ongoingTasks = [];
+			
+			for (index = 0; index < tasks.length; index++) {
+				var task = tasks[index];
+				taskhtml += '<tr><td>' + task.status + '</td>';
+				taskhtml += '<td>' + task.title + '</td>';
+				taskhtml += '<td>' + task.creator.fullName + '</td>';
+				taskhtml += '<td>' + new Date(task.creationTime).toDateString() + '</td>';
+				taskhtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td></tr>';
+				
+				if (task.status === 'IN_PROGRESS') {
+					ongoingTasks.push(task);
+				}
+			}
+			
+			taskhtml += '</tbody></table></div></div>';
 			$('#tasklist').append(taskhtml);
+			
+			if (ongoingTasks.length >= 2) {
+				$("#alert-area").append('You have ' + ongoingTasks.length + ' tasks in execution at the moment. Think about finishing them before accepting any more tasks.');
+				$("#alert-area").show();
+			}
 		}
+		
 	</script>
 </body>
 </html>

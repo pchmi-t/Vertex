@@ -2,6 +2,7 @@ package com.fmi.javaee.vertex.task;
 
 import java.util.Date;
 
+import com.fmi.javaee.vertex.user.User;
 import com.fmi.javaee.vertex.user.UserEntity;
 
 public class Task {
@@ -16,13 +17,13 @@ public class Task {
 
 	private Priority priority;
 
-	private String asignee;
+	private User asignee;
 
 	private String definition;
 
-	private String creator;
+	private User creator;
 
-	private String lastModificator;
+	private User lastModificator;
 
 	private String title;
 
@@ -35,11 +36,15 @@ public class Task {
 		this.definition = taskEntity.getDefinition();
 		this.priority = taskEntity.getPriority();
 		this.projectId = taskEntity.getProject().getProjectId();
-		this.asignee = getUserEmail(taskEntity.getAsignee());
-		this.creator = getUserEmail(taskEntity.getCreator());
-		this.lastModificator = getUserEmail(taskEntity.getLastModificator());
+		this.asignee = getUser(taskEntity.getAsignee());
+		this.creator = getUser(taskEntity.getCreator());
+		this.lastModificator = getUser(taskEntity.getLastModificator());
 		this.status = taskEntity.getStatus();
 		this.title = taskEntity.getTitle();
+	}
+
+	private User getUser(UserEntity user) {
+		return user != null ? new User(user) : null;
 	}
 
 	public Task() {
@@ -85,11 +90,11 @@ public class Task {
 		this.priority = priority;
 	}
 
-	public String getAsignee() {
+	public User getAsignee() {
 		return asignee;
 	}
 
-	public void setAsignee(String asignee) {
+	public void setAsignee(User asignee) {
 		this.asignee = asignee;
 	}
 
@@ -101,19 +106,19 @@ public class Task {
 		this.definition = definition;
 	}
 
-	public String getCreator() {
+	public User getCreator() {
 		return creator;
 	}
 
-	public void setCreator(String creator) {
+	public void setCreator(User creator) {
 		this.creator = creator;
 	}
 
-	public String getLastModificator() {
+	public User getLastModificator() {
 		return lastModificator;
 	}
 
-	public void setLastModificator(String lastModificator) {
+	public void setLastModificator(User lastModificator) {
 		this.lastModificator = lastModificator;
 	}
 
@@ -133,8 +138,12 @@ public class Task {
 		this.projectId = projectId;
 	}
 
-	private String getUserEmail(UserEntity user) {
-		return user != null ? user.getEmail() : null;
+	@Override
+	public String toString() {
+		return "Task [taskId=" + taskId + ", creationTime=" + creationTime + ", modificationTime=" + modificationTime
+				+ ", status=" + status + ", priority=" + priority + ", asignee=" + asignee + ", definition="
+				+ definition + ", creator=" + creator + ", lastModificator=" + lastModificator + ", title=" + title
+				+ ", projectId=" + projectId + "]";
 	}
 
 }
