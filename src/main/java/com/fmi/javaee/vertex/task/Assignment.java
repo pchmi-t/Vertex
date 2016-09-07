@@ -1,6 +1,6 @@
 package com.fmi.javaee.vertex.task;
 
-public class TaskAssignRequest {
+public class Assignment {
 
 	private String assignee;
 

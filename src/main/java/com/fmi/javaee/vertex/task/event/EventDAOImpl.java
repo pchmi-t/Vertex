@@ -1,4 +1,4 @@
-package com.fmi.javaee.vertex.event;
+package com.fmi.javaee.vertex.task.event;
 
 import java.util.Collection;
 
@@ -16,6 +16,12 @@ class EventDAOImpl implements EventDAO {
 	EventDAOImpl(Provider<EntityManager> entityManagerProvider) {
 		this.entityManagerProvider = entityManagerProvider;
 	}
+	
+	@Override
+	public void save(EventEntity event) {
+		EntityManager entityManager = entityManagerProvider.get();
+		entityManager.persist(event);
+	}
 
 	@Override
 	public Collection<EventEntity> getEventsOfUser(String userEmail) {
@@ -24,4 +30,5 @@ class EventDAOImpl implements EventDAO {
 		getByUserQuery.setParameter("email", userEmail);
 		return getByUserQuery.getResultList();
 	}
+
 }

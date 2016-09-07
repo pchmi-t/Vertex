@@ -7,8 +7,9 @@
 
 		<class>com.fmi.javaee.vertex.user.UserEntity</class>
 		<class>com.fmi.javaee.vertex.task.TaskEntity</class>
-		<class>com.fmi.javaee.vertex.event.EventEntity</class>
+		<class>com.fmi.javaee.vertex.task.event.EventEntity</class>
 		<class>com.fmi.javaee.vertex.project.ProjectEntity</class>
+		<class>com.fmi.javaee.vertex.task.event.subscription.SubscriptionEntity</class>
 
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>

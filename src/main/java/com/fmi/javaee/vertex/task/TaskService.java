@@ -1,6 +1,7 @@
 package com.fmi.javaee.vertex.task;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,26 +24,31 @@ import org.slf4j.LoggerFactory;
 
 import com.fmi.javaee.vertex.project.ProjectDAO;
 import com.fmi.javaee.vertex.project.ProjectEntity;
+import com.fmi.javaee.vertex.task.event.EventEntity;
+import com.fmi.javaee.vertex.task.event.EventType;
 import com.fmi.javaee.vertex.user.UserDAO;
 import com.fmi.javaee.vertex.user.UserEntity;
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 
 @Path("task")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class TaskService {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskService.class);
 
 	private final TaskDAO taskDAO;
 	private final UserDAO userDAO;
 	private final ProjectDAO projectDAO;
+	private final EventBus eventBus;
 
 	@Inject
-	public TaskService(TaskDAO taskDAO, UserDAO userDAO, ProjectDAO projectDAO) {
+	public TaskService(TaskDAO taskDAO, UserDAO userDAO, ProjectDAO projectDAO, EventBus eventBus) {
 		this.projectDAO = projectDAO;
 		this.taskDAO = taskDAO;
 		this.userDAO = userDAO;
+		this.eventBus = eventBus;
 	}
 
 	@POST
@@ -84,25 +90,39 @@ public class TaskService {
 
 	@PUT
 	@Path("{taskId}/assign")
-	public Response assignTask(@PathParam("taskId") String taskId, TaskAssignRequest taskAssignRequest) {
-		String requestedAssignee = taskAssignRequest.getAssignee();
-		
-		if (taskAssignRequest == null || requestedAssignee == null) {
+	public Response assignTask(@PathParam("taskId") String taskId, Assignment taskAssignment) {
+		String requestedAssignee = taskAssignment.getAssignee();
+
+		if (taskAssignment == null || requestedAssignee == null) {
 			LOGGER.error("Received invalid task assignment request with missing assignee");
 			return Response.status(Status.BAD_REQUEST).build();
 		}
-		
+
 		UserEntity assignee = userDAO.getUserByEmail(requestedAssignee);
 		if (assignee == null) {
 			LOGGER.error("Invalid user in task assignment request: [{}]", requestedAssignee);
 			return Response.status(Status.BAD_REQUEST).build();
 		}
-		
+
 		TaskEntity task = taskDAO.getTaskById(taskId);
+		
+		LOGGER.debug("Creating task assignment event...");
+		String previsousAsignee = task.getAsignee() != null ? task.getAsignee().getEmail() : null;
+		
+		EventEntity event = new EventEntity();
+		event.setBefore(previsousAsignee);
+		event.setAfter(requestedAssignee);
+		event.setRefTask(task);
+		event.setRefUser(assignee);
+		event.setType(EventType.ASSIGNMENT);
+		event.setTimestamp(new Date());
+		eventBus.post(event);
+		
 		LOGGER.debug("Assigning task [{}] to user [{}]", taskId, requestedAssignee);
 		task.setAsignee(assignee);
 		taskDAO.updateTask(task);
-		return Response.ok().build();
+		
+		return Response.ok(new Task(task)).build();
 	}
 
 	@PUT
@@ -123,14 +143,14 @@ public class TaskService {
 			LOGGER.error("Failed attempt to retrieve user tasks!");
 			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
 		}
-		
+
 		LOGGER.info("Retrieving all tasks assigned to user [{}]", loggedEmail);
 		UserEntity user = userDAO.getUserByEmail(loggedEmail);
-		
+
 		List<TaskEntity> usersTaskEntities = taskDAO.getTasksByAssignee(user);
 		return getByUser(usersTaskEntities);
 	}
-	
+
 	@GET
 	@Path("/creator/")
 	public Response getTaskByCreator(@Context HttpServletRequest request) {
@@ -142,7 +162,7 @@ public class TaskService {
 
 		LOGGER.info("Retrieving all tasks created by user [{}]", loggedEmail);
 		UserEntity user = userDAO.getUserByEmail(loggedEmail);
-		
+
 		List<TaskEntity> usersTaskEntities = taskDAO.getTasksByCreator(user);
 		return getByUser(usersTaskEntities);
 	}
@@ -159,7 +179,6 @@ public class TaskService {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 	}
-	
 
 	@GET
 	public Response getTasksByCriteria(@QueryParam("username") String username, @QueryParam("limit") Integer limit,

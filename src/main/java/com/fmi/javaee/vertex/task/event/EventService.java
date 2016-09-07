@@ -1,4 +1,4 @@
-package com.fmi.javaee.vertex.event;
+package com.fmi.javaee.vertex.task.event;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,9 +38,9 @@ public class EventService {
 			return Response.status(HttpServletResponse.SC_NOT_FOUND).build();
 		}
 		
-		List<EventBean> events = new ArrayList<>();
+		List<Event> events = new ArrayList<>();
 		for (EventEntity eventEntity : eventsOfUser) {
-			events.add(new EventBean(eventEntity));
+			events.add(new Event(eventEntity));
 		}
 		return Response.ok(events).build();
 	}

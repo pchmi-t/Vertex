@@ -1,6 +1,7 @@
 package com.fmi.javaee.vertex.task;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -24,16 +26,18 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.project.ProjectEntity;
+import com.fmi.javaee.vertex.task.event.subscription.SubscriptionEntity;
 import com.fmi.javaee.vertex.user.UserEntity;
 
 @Entity
 @Table(name = "tasks")
-@NamedQueries({ @NamedQuery(name = TaskEntity.GET_BY_ASIGNEE, query = "SELECT t FROM TaskEntity t WHERE t.asignee = :asignee"),
-	@NamedQuery(name = TaskEntity.GET_BY_CREATOR, query = "SELECT t FROM TaskEntity t WHERE t.creator = :creator")})
+@NamedQueries({
+		@NamedQuery(name = TaskEntity.GET_BY_ASIGNEE, query = "SELECT t FROM TaskEntity t WHERE t.asignee = :asignee"),
+		@NamedQuery(name = TaskEntity.GET_BY_CREATOR, query = "SELECT t FROM TaskEntity t WHERE t.creator = :creator") })
 public class TaskEntity {
-	
+
 	static final String GET_BY_ASIGNEE = "getByAsignee";
-	
+
 	static final String GET_BY_CREATOR = "getByCreator";
 
 	private String taskId;
@@ -57,6 +61,8 @@ public class TaskEntity {
 	private String title;
 
 	private ProjectEntity project;
+
+	private List<SubscriptionEntity> subscriptions;
 
 	// private Project project;
 
@@ -180,5 +186,13 @@ public class TaskEntity {
 		this.project = project;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "subscriptionTask")
+	public List<SubscriptionEntity> getSubscriptions() {
+		return subscriptions;
+	}
+
+	public void setSubscriptions(List<SubscriptionEntity> subscriptions) {
+		this.subscriptions = subscriptions;
+	}
 
 }

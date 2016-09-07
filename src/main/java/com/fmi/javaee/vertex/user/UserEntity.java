@@ -4,6 +4,7 @@ import java.beans.Transient;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,6 +28,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.project.ProjectEntity;
 import com.fmi.javaee.vertex.task.TaskEntity;
+import com.fmi.javaee.vertex.task.event.subscription.SubscriptionEntity;
 
 @Entity
 @Table(name = "Users")
@@ -74,6 +76,8 @@ public class UserEntity {
 	private Collection<ProjectEntity> memberProjects = new ArrayList<>();
 
 	private Collection<ProjectEntity> adminProjects = new ArrayList<>();
+	
+    private List<SubscriptionEntity> subscriptions;
 
 	private Duration averageTaskEcecutionTime;
 
@@ -243,5 +247,14 @@ public class UserEntity {
 
 	public void setAdminProjects(Collection<ProjectEntity> adminProjects) {
 		this.adminProjects = adminProjects;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "subscribedUser")
+	public List<SubscriptionEntity> getSubscriptions() {
+		return subscriptions;
+	}
+
+	public void setSubscriptions(List<SubscriptionEntity> subscriptions) {
+		this.subscriptions = subscriptions;
 	}
 }
