@@ -1,0 +1,14 @@
+<html>
+    <head>
+      <title>Task assignment changed by $othername</title>
+    </head>
+    <body>
+      
+ 		<p>Dear $name,</p><br/>
+ 		<p>The assignment of Vertex task [$tasktitle] for which you are subscribed has been modified by $othername.</p>
+ 		<p>The task is now assigned to $assignee.</p><br/>
+ 		<p>Kind regards,</p>
+ 		<p>Vertex Team</p>
+ 
+   </body>
+ </html>

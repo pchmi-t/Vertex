@@ -35,7 +35,7 @@ public class EventListener {
 	public void listen(EventEntity event) {
 		UserEntity refUser = event.getRefUser();
 		TaskEntity refTask = event.getRefTask();
-		LOGGER.debug("Observed event of type [{}] from user [{}]", event.getType(), refUser.getEmail());
+		LOGGER.error("Observed event of type [{}] from user [{}]", event.getType(), refUser.getEmail());
 
 		if (!subscriptionDAO.isSubscribed(refUser, refTask)) {
 			LOGGER.debug("Subscribing user [{}] to task with ID [{}] and title [{}]", refUser.getEmail(), refTask.getTaskId(), refTask.getTitle());
