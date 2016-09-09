@@ -1,6 +1,7 @@
 package com.fmi.javaee.vertex.task.event;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -24,7 +26,7 @@ import com.fmi.javaee.vertex.user.UserEntity;
 @Entity
 @Table(name = "taskEvents")
 @NamedQueries({
-		@NamedQuery(query = "select e from EventEntity e join fetch e.refUser where e.refUser.email = :email", name = EventEntity.GET_BY_USER) })
+		@NamedQuery(query = "select e from EventEntity e join fetch e.subscribers sub where sub.email = :email", name = EventEntity.GET_BY_USER) })
 public class EventEntity {
 
 	static final String GET_BY_USER = "getEventsByUser";
@@ -34,14 +36,16 @@ public class EventEntity {
 	private Date timestamp;
 
 	private String before;
-	
+
 	private String after;
-	
+
 	private EventType type;
 
 	private TaskEntity refTask;
 
 	private UserEntity refUser;
+
+	private List<UserEntity> subscribers;
 
 	@Id
 	@GeneratedValue(generator = "uuid")
@@ -111,7 +115,14 @@ public class EventEntity {
 	public void setType(EventType type) {
 		this.type = type;
 	}
-	
-	
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	public List<UserEntity> getSubscribers() {
+		return subscribers;
+	}
+
+	public void setSubscribers(List<UserEntity> subscribers) {
+		this.subscribers = subscribers;
+	}
 
 }

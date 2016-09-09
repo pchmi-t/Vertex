@@ -80,9 +80,9 @@ function listEvent(index, event) {
 	var eventHtml = '<div class="pull-left"><span class="icon">';
 	eventHtml += getEventIcon(event);
 	eventHtml += '</span></div>'
-	eventHtml += '<div class="media-body">' + event.description;
-	eventHtml += '  <small class="text-muted">'
-			+ new Date(event.creationTime).toDateString();
+	eventHtml += '<div class="media-body">' + event.userEmail + " modified task [" + event.taskId;
+	eventHtml += ']  <small class="text-muted">'
+			+ new Date(event.timestamp).toLocaleString();
 	;
 	eventHtml += '</small><br /></div>';
 	$('#eventssection').append(eventHtml);

@@ -1,5 +1,7 @@
 package com.fmi.javaee.vertex.task.event;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,9 +47,12 @@ public class EventListener {
 			subscriptionDAO.create(subscription);
 		}
 
+		List<UserEntity> subscribers = subscriptionDAO.getSubscribers(refTask);
+		event.setSubscribers(subscribers);
+		
 		eventDAO.save(event);
 		EventMessenger messenger = messengerFactory.create(event.getType());
-		messenger.notifySubscribers(event);
+		messenger.notifySubscribers(subscribers, event);
 	}
 
 }

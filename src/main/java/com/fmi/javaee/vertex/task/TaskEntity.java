@@ -67,8 +67,8 @@ public class TaskEntity {
 	// private Project project;
 
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	@GeneratedValue(generator = "sequence_task_id")  
+	@GenericGenerator(name = "sequence_task_id", strategy = "com.fmi.javaee.vertex.task.TaskIdGenerator")
 	@JsonProperty
 	@Column(name = "taskId", unique = true, nullable = false)
 	public String getTaskId() {

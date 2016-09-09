@@ -1,6 +1,6 @@
 package com.fmi.javaee.vertex.task.event;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -24,10 +24,10 @@ class EventDAOImpl implements EventDAO {
 	}
 
 	@Override
-	public Collection<EventEntity> getEventsOfUser(String userEmail) {
+	public List<EventEntity> getEventsOfUser(String userEmail,  int maxEventCount) {
 		EntityManager entityManager = entityManagerProvider.get();
 		TypedQuery<EventEntity> getByUserQuery = entityManager.createNamedQuery(EventEntity.GET_BY_USER,  EventEntity.class);
-		getByUserQuery.setParameter("email", userEmail);
+		getByUserQuery.setParameter("email", userEmail).setMaxResults(maxEventCount);
 		return getByUserQuery.getResultList();
 	}
 

@@ -1,7 +1,7 @@
 package com.fmi.javaee.vertex.task.event;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 @Produces(MediaType.APPLICATION_JSON)
 public class EventService {
 	
+	private static final int DEFAULT_MAX_EVENTS = 15;
 	private final EventDAO eventDAO;
 	
 	@Inject
@@ -33,7 +34,7 @@ public class EventService {
 			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
 		}
 		
-		Collection<EventEntity> eventsOfUser = eventDAO.getEventsOfUser(loggedEmail);
+		List<EventEntity> eventsOfUser = eventDAO.getEventsOfUser(loggedEmail, DEFAULT_MAX_EVENTS);
 		if (eventsOfUser.isEmpty()) {
 			return Response.status(HttpServletResponse.SC_NOT_FOUND).build();
 		}
@@ -42,6 +43,8 @@ public class EventService {
 		for (EventEntity eventEntity : eventsOfUser) {
 			events.add(new Event(eventEntity));
 		}
+		
+		Collections.sort(events, Collections.reverseOrder(new EventDateComparator()));
 		return Response.ok(events).build();
 	}
 

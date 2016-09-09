@@ -13,7 +13,6 @@ import com.fmi.javaee.vertex.mail.MailTemplateException;
 import com.fmi.javaee.vertex.mail.MailTemplateLoader;
 import com.fmi.javaee.vertex.task.TaskEntity;
 import com.fmi.javaee.vertex.task.event.EventEntity;
-import com.fmi.javaee.vertex.task.event.subscription.SubscriptionDAO;
 import com.fmi.javaee.vertex.user.UserEntity;
 
 public abstract class BaseEventMessenger implements EventMessenger {
@@ -23,20 +22,16 @@ public abstract class BaseEventMessenger implements EventMessenger {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseEventMessenger.class);
 
 	private final MailTemplateLoader templateLoader;
-	private final SubscriptionDAO subscriptionDAO;
 	private final MailSender mailSender;
 
-	public BaseEventMessenger(SubscriptionDAO subscriptionDAO, MailTemplateLoader templateLoader, MailSender mailSender) {
-		this.subscriptionDAO = subscriptionDAO;
+	public BaseEventMessenger(MailTemplateLoader templateLoader, MailSender mailSender) {
 		this.templateLoader = templateLoader;
 		this.mailSender = mailSender;
 	}
 	
 	@Override
-	public void notifySubscribers(EventEntity event) {
+	public void notifySubscribers(List<UserEntity> subscribers, EventEntity event) {
 		String sourceUser = event.getRefUser().getEmail();
-
-		List<UserEntity> subscribers = subscriptionDAO.getSubscribers(event.getRefTask());
 		for (UserEntity userEntity : subscribers) {
 			if (!userEntity.getEmail().equals(sourceUser)) {
 				notifySubscriber(userEntity, event);

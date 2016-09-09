@@ -5,7 +5,7 @@
     <body>
       
  		<p>Dear $name,</p><br/>
- 		<p>The assignment of Vertex task [$tasktitle] for which you are subscribed has been modified by $othername.</p>
+ 		<p>The assignment of Vertex task [$taskid] for which you are subscribed has been modified by $othername.</p>
  		<p>The task was changed from: $before</p>
  		<p>The new state is: $after</p><br/>
  		<p>Kind regards,</p>
