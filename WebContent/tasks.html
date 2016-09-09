@@ -14,7 +14,7 @@
 <link href="/vertex/resources/css/icons.css" rel="stylesheet">
 <link href="/vertex/resources/css/generics.css" rel="stylesheet">
 </head>
-<body id="skin-blur-ocean">
+<body id="skin-blur-blue">
 	<header id="header" class="media">
 		<a href="" id="menu-toggle"></a> <a class="logo pull-left"
 			href="/vertex/index.html">Vertex Dashboard</a>
@@ -184,7 +184,7 @@
 		function getAssignedTasksTable(tableTitle, tasks) {
 			var taskhtml = '<div class="block-area" id="responsiveTable"><h3 class="block-title">' + tableTitle + '</h3>';
 			taskhtml += '<div class="table-responsive overflow"><table class="table table-bordered table-hover tile"><thead><tr>';
-			taskhtml += '<th>Status</th><th>Priority</th><th>Title</th><th>Created By</th><th>Date Greated</th><th>Last Updated</th>';
+			taskhtml += '<th>Status</th><th>Priority</th><th>ID</th><th>Title</th><th>Created By</th><th>Date Greated</th><th>Last Updated</th>';
 			taskhtml += '<th>Edit</th></tr></thead><tbody>';
 			
 			var ongoingTasks = [];
@@ -192,6 +192,7 @@
 				var task = tasks[index];
 				taskhtml += '<tr><td>' + task.status + '</td>';
 				taskhtml += '<td>' + task.priority + '</td>';
+				taskhtml += '<td>' + task.taskId + '</td>';
 				taskhtml += '<td>' + task.title + '</td>';
 				taskhtml += '<td>' + task.creator.fullName + '</td>';
 				taskhtml += '<td>' + new Date(task.creationTime).toDateString() + '</td>';
@@ -216,7 +217,7 @@
 		function generateCreatedByTasksTable(tableTitle, tasks) {
 			var taskhtml = '<div class="block-area" id="responsiveTable"><h3 class="block-title">' + tableTitle + '</h3>';
 			taskhtml += '<div class="table-responsive overflow"><table class="table table-bordered table-hover tile"><thead><tr>';
-			taskhtml += '<th>Status</th><th>Priority</th><th>Title</th><th>Assignee</th><th>Date Greated</th><th>Last Updated</th>';
+			taskhtml += '<th>Status</th><th>Priority</th><th>ID</th><th>Title</th><th>Assignee</th><th>Date Greated</th><th>Last Updated</th>';
 			taskhtml += '<th>Edit</th></tr></thead><tbody>';
 
 			for (index = 0; index < tasks.length; index++) {
@@ -224,6 +225,7 @@
 				if (!task.asignee || task.asignee.email !== task.creator.email) {
 					taskhtml += '<tr><td>' + task.status + '</td>';
 					taskhtml += '<td>' + task.priority + '</td>';
+					taskhtml += '<td>' + task.taskId + '</td>';
 					taskhtml += '<td>' + task.title + '</td>';
 					taskhtml += '<td>' + ((task.asignee) ? task.asignee.fullName : "") + '</td>';
 					taskhtml += '<td>' + new Date(task.creationTime).toDateString() + '</td>';

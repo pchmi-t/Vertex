@@ -8,7 +8,6 @@ import javax.persistence.TypedQuery;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.persist.Transactional;
 
 class UserDAOImpl implements UserDAO {
 
@@ -48,10 +47,11 @@ class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	@Transactional
 	public UserEntity createUser(UserEntity user) {
 		EntityManager entityManager = entityManagerProvider.get();
+		entityManager.getTransaction().begin();
 		entityManager.persist(user);
+		entityManager.getTransaction().commit();
 		return user;
 	}
 

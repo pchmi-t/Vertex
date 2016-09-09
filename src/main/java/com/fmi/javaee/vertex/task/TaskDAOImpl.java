@@ -9,7 +9,6 @@ import javax.persistence.TypedQuery;
 import com.fmi.javaee.vertex.user.UserEntity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.persist.Transactional;
 
 class TaskDAOImpl implements TaskDAO {
 
@@ -21,7 +20,6 @@ class TaskDAOImpl implements TaskDAO {
 	}
 
 	@Override
-	@Transactional
 	public TaskEntity createTask(TaskEntity task) {
 		task.setCreationTime(new Date());
 		task.setModificationTime(task.getCreationTime());
@@ -29,32 +27,20 @@ class TaskDAOImpl implements TaskDAO {
 		task.setStatus(Status.NEW);
 
 		EntityManager entityManager = entityManagerProvider.get();
+		entityManager.getTransaction().begin();
 		entityManager.persist(task);
+		entityManager.getTransaction().commit();
 		return task;
 	}
 
 	@Override
-	@Transactional
 	public TaskEntity updateTask(TaskEntity task) {
 		EntityManager entityManager = entityManagerProvider.get();
+		entityManager.getTransaction().begin();
 		TaskEntity updatedTask = entityManager.merge(task);
+		entityManager.getTransaction().commit();
 		return updatedTask;
 	}
-
-//	private void createEvents(TaskEntity oldTask, TaskEntity newTask) {
-//		if (!StringUtils.isBlank(newTask.getDefinition()) && !oldTask.getDefinition().equals(newTask.getDefinition())) {
-//			EventFactory.getInstance().getEventByComponent(Component.DEFINITION).composeEvent(newTask);
-//		}
-//
-//		if (!oldTask.getPriority().equals(newTask.getPriority())) {
-//			EventFactory.getInstance().getEventByComponent(Component.PRIORITY).composeEvent(newTask);
-//		}
-//
-//		if (!oldTask.getStatus().equals(newTask.getStatus())) {
-//			EventFactory.getInstance().getEventByComponent(Component.STATUS).composeEvent(newTask);
-//		}
-//
-//	}
 
 	@Override
 	public TaskEntity getTaskById(String id) {

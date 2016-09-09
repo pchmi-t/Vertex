@@ -20,7 +20,9 @@ class EventDAOImpl implements EventDAO {
 	@Override
 	public void save(EventEntity event) {
 		EntityManager entityManager = entityManagerProvider.get();
+		entityManager.getTransaction().begin();
 		entityManager.persist(event);
+		entityManager.getTransaction().commit();
 	}
 
 	@Override

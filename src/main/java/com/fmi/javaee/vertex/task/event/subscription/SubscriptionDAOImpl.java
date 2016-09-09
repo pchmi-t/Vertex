@@ -10,7 +10,6 @@ import com.fmi.javaee.vertex.task.TaskEntity;
 import com.fmi.javaee.vertex.user.UserEntity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.persist.Transactional;
 
 public class SubscriptionDAOImpl implements SubscriptionDAO {
 	
@@ -22,10 +21,11 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
 	}
 
 	@Override
-	@Transactional
 	public void create(SubscriptionEntity subscription) {
 		EntityManager entityManager = entityManagerProvider.get();
+		entityManager.getTransaction().begin();
 		entityManager.persist(subscription);
+		entityManager.getTransaction().commit();
 	}
 
 	@Override

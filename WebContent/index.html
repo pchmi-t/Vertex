@@ -215,7 +215,7 @@
 		} else {
 			detailsHtml += '<div class="block-area" id="responsiveTable">';
 			detailsHtml += '<div class="table-responsive overflow"><table class="table table-bordered table-hover tile"><thead><tr>';
-			detailsHtml += '<th>Status</th><th>Priority</th><th>Title</th><th>Created By</th><th>Assignee</th><th>Date Greated</th><th>Last Updated</th>';
+			detailsHtml += '<th>Status</th><th>Priority</th><th>ID</th><th>Title</th><th>Created By</th><th>Assignee</th><th>Date Greated</th><th>Last Updated</th>';
 			detailsHtml += '<th><span class="icon">&#61886;</span>  Edit</th></tr></thead><tbody>';
 			
 			var tasks = selectedProject.tasks;
@@ -225,6 +225,7 @@
 				if (task.status !== 'RESOLVED') {
 					detailsHtml += '<tr><td>' + task.status + '</td>';
 					detailsHtml += '<td>' + task.priority + '</td>';
+					detailsHtml += '<td>' + task.taskId + '</td>';
 					detailsHtml += '<td>' + task.title + '</td>';
 					detailsHtml += '<td>' + ((task.creator) ? task.creator.fullName : " ") + '</td>';
 					detailsHtml += '<td>' + ((task.asignee) ? task.asignee.fullName : " ") + '</td>';

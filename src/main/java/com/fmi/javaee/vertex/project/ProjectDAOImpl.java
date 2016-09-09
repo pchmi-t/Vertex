@@ -10,7 +10,6 @@ import javax.persistence.TypedQuery;
 import com.fmi.javaee.vertex.user.UserEntity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.persist.Transactional;
 
 class ProjectDAOImpl implements ProjectDAO {
 	
@@ -30,7 +29,6 @@ class ProjectDAOImpl implements ProjectDAO {
 	}
 
 	@Override
-	@Transactional
 	public ProjectEntity createProject(ProjectRequest projectRequest, Set<UserEntity> admins,
 			Set<UserEntity> members) {
 		ProjectEntity newProject = new ProjectEntity();
@@ -41,7 +39,9 @@ class ProjectDAOImpl implements ProjectDAO {
 		newProject.setProjectName(projectRequest.getProjectName());
 		
 		EntityManager entityManager = entityManagerProvider.get();
+		entityManager.getTransaction().begin();
 		entityManager.persist(newProject);
+		entityManager.getTransaction().commit();
 		return newProject;
 	}
 
