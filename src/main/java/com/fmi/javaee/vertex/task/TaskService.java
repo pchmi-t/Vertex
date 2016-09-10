@@ -25,6 +25,8 @@ import com.fmi.javaee.vertex.project.ProjectDAO;
 import com.fmi.javaee.vertex.project.ProjectEntity;
 import com.fmi.javaee.vertex.task.event.EventEntity;
 import com.fmi.javaee.vertex.task.event.EventType;
+import com.fmi.javaee.vertex.task.event.subscription.SubscriptionDAO;
+import com.fmi.javaee.vertex.task.event.subscription.SubscriptionEntity;
 import com.fmi.javaee.vertex.user.UserDAO;
 import com.fmi.javaee.vertex.user.UserEntity;
 import com.google.common.eventbus.EventBus;
@@ -39,11 +41,13 @@ public class TaskService {
 
 	private final TaskDAO taskDAO;
 	private final UserDAO userDAO;
+	private final SubscriptionDAO subscriptionDAO;
 	private final ProjectDAO projectDAO;
 	private final EventBus eventBus;
 
 	@Inject
-	public TaskService(TaskDAO taskDAO, UserDAO userDAO, ProjectDAO projectDAO, EventBus eventBus) {
+	public TaskService(TaskDAO taskDAO, UserDAO userDAO, ProjectDAO projectDAO, SubscriptionDAO subscriptionDAO, EventBus eventBus) {
+		this.subscriptionDAO = subscriptionDAO;
 		this.projectDAO = projectDAO;
 		this.taskDAO = taskDAO;
 		this.userDAO = userDAO;
@@ -90,8 +94,15 @@ public class TaskService {
 
 		taskRequest.setProject(project);
 		taskRequest.setCreator(creator);
+		taskRequest.setStatus(TaskStatus.NEW);
 
 		TaskEntity createdTask = taskDAO.createTask(taskRequest);
+		
+		SubscriptionEntity subscription = new SubscriptionEntity();
+		subscription.setSubscribedUser(creator);
+		subscription.setSubscriptionTask(createdTask);
+		subscriptionDAO.create(subscription);
+		
 		if (createdTask != null) {
 			return Response.ok().entity(new Task(createdTask)).build();
 		} else {

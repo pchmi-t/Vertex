@@ -15,6 +15,8 @@ public class Task {
 
 	private Date creationTime;
 
+	private Date deadline;
+
 	private Date modificationTime;
 
 	private TaskStatus status;
@@ -42,6 +44,7 @@ public class Task {
 	public Task(TaskEntity taskEntity) {
 		this.taskId = taskEntity.getTaskId();
 		this.creationTime = taskEntity.getCreationTime();
+		this.deadline = taskEntity.getDeadline();
 		this.modificationTime = taskEntity.getModificationTime();
 		this.definition = taskEntity.getDefinition();
 		this.priority = taskEntity.getPriority();
@@ -70,6 +73,14 @@ public class Task {
 
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
+	}
+
+	public Date getDeadline() {
+		return deadline;
+	}
+
+	public void setDeadline(Date deadline) {
+		this.deadline = deadline;
 	}
 
 	public void setProjectName(String projectName) {

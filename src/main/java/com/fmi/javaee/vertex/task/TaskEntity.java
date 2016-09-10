@@ -25,7 +25,6 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.project.ProjectEntity;
 import com.fmi.javaee.vertex.task.comment.CommentEntity;
 import com.fmi.javaee.vertex.task.event.subscription.SubscriptionEntity;
@@ -45,6 +44,8 @@ public class TaskEntity {
 	private String taskId;
 
 	private Date creationTime;
+	
+	private Date deadline;
 
 	private Date modificationTime;
 
@@ -71,7 +72,6 @@ public class TaskEntity {
 	@Id
 	@GeneratedValue(generator = "sequence_task_id")
 	@GenericGenerator(name = "sequence_task_id", strategy = "com.fmi.javaee.vertex.task.TaskIdGenerator")
-	@JsonProperty
 	@Column(name = "taskId", unique = true, nullable = false)
 	public String getTaskId() {
 		return taskId;
@@ -95,7 +95,6 @@ public class TaskEntity {
 
 	@Column(name = "creationTime")
 	@Temporal(TemporalType.TIMESTAMP)
-	@JsonProperty
 	public Date getCreationTime() {
 		return creationTime;
 	}
@@ -103,10 +102,20 @@ public class TaskEntity {
 	public void setCreationTime(Date currentDate) {
 		this.creationTime = currentDate;
 	}
+	
+	
+	@Column(name = "deadline")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getDeadline() {
+		return deadline;
+	}
+
+	public void setDeadline(Date deadline) {
+		this.deadline = deadline;
+	}
 
 	@Column(name = "modificationTime")
 	@Temporal(TemporalType.TIMESTAMP)
-	@JsonProperty
 	public Date getModificationTime() {
 		return modificationTime;
 	}
@@ -116,7 +125,6 @@ public class TaskEntity {
 	}
 
 	@Column(name = "status")
-	@JsonProperty
 	@Enumerated(EnumType.STRING)
 	public TaskStatus getStatus() {
 		return status;
@@ -137,7 +145,6 @@ public class TaskEntity {
 	}
 
 	@Column(name = "definition")
-	@JsonProperty
 	public String getDefinition() {
 		return definition;
 	}
@@ -148,7 +155,6 @@ public class TaskEntity {
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "creator_id")
-	@JsonProperty
 	public UserEntity getCreator() {
 		return creator;
 	}
@@ -157,7 +163,6 @@ public class TaskEntity {
 		this.creator = creator;
 	}
 
-	@JsonProperty
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "last_modificator_id")
 	public UserEntity getLastModificator() {
@@ -168,7 +173,6 @@ public class TaskEntity {
 		this.lastModificator = lastModificator;
 	}
 
-	@JsonProperty
 	@Column(name = "priority")
 	@Enumerated(EnumType.STRING)
 	public Priority getPriority() {
@@ -181,7 +185,6 @@ public class TaskEntity {
 
 	@Column(name = "title", updatable = false)
 	@NotBlank(message = "The task title can not be null or empty.")
-	@JsonProperty
 	public String getTitle() {
 		return title;
 	}
@@ -202,6 +205,9 @@ public class TaskEntity {
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "subscriptionTask")
 	public List<SubscriptionEntity> getSubscriptions() {
+		if (subscriptions == null) {
+			subscriptions = new ArrayList<>();
+		}
 		return subscriptions;
 	}
 
