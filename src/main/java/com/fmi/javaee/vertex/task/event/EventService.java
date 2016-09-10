@@ -19,7 +19,7 @@ import com.google.inject.Inject;
 @Produces(MediaType.APPLICATION_JSON)
 public class EventService {
 	
-	private static final int DEFAULT_MAX_EVENTS = 15;
+	private static final int DEFAULT_MAX_EVENTS = 6;
 	private final EventDAO eventDAO;
 	
 	@Inject

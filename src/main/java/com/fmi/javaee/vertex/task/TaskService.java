@@ -13,7 +13,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -49,6 +48,28 @@ public class TaskService {
 		this.taskDAO = taskDAO;
 		this.userDAO = userDAO;
 		this.eventBus = eventBus;
+	}
+
+	@GET
+	@Path("/{taskId}")
+	public Response getTask(@Context HttpServletRequest request, @PathParam("taskId") String taskId) {
+		String loggedEmail = request.getRemoteUser();
+		if (loggedEmail == null) {
+			LOGGER.error("Failed attempt to retrieve user tasks!");
+			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+		} else if (taskId == null) {
+			return Response.status(HttpServletResponse.SC_BAD_REQUEST).build();
+		}
+
+		LOGGER.info("Retrieving task with ID [{}]", taskId);
+
+		TaskEntity task = taskDAO.getTaskById(taskId);
+		if (task == null) {
+			return Response.status(HttpServletResponse.SC_NOT_FOUND).build();
+		} else {
+			return Response.ok(new Task(task)).build();
+		}
+
 	}
 
 	@POST
@@ -90,9 +111,8 @@ public class TaskService {
 
 	@PUT
 	@Path("{taskId}/assign")
-	public Response assignTask(@PathParam("taskId") String taskId, Assignment taskAssignment) {
+	public Response assignTask(@PathParam("taskId") String taskId, AssignmentRequest taskAssignment) {
 		String requestedAssignee = taskAssignment.getAssignee();
-
 		if (taskAssignment == null || requestedAssignee == null) {
 			LOGGER.error("Received invalid task assignment request with missing assignee");
 			return Response.status(Status.BAD_REQUEST).build();
@@ -105,34 +125,71 @@ public class TaskService {
 		}
 
 		TaskEntity task = taskDAO.getTaskById(taskId);
-		
 		LOGGER.debug("Creating task assignment event...");
 		String previsousAsignee = task.getAsignee() != null ? task.getAsignee().getEmail() : null;
-		
-		EventEntity event = new EventEntity();
-		event.setBefore(previsousAsignee);
-		event.setAfter(requestedAssignee);
-		event.setRefTask(task);
-		event.setRefUser(assignee);
-		event.setType(EventType.ASSIGNMENT);
-		event.setTimestamp(new Date());
-		eventBus.post(event);
-		
+
+		createEvent(EventType.ASSIGNMENT, previsousAsignee, requestedAssignee, assignee, task);
+
 		LOGGER.debug("Assigning task [{}] to user [{}]", taskId, requestedAssignee);
 		task.setAsignee(assignee);
 		taskDAO.updateTask(task);
-		
+
 		return Response.ok(new Task(task)).build();
 	}
 
 	@PUT
-	public Response updateOrUpdateTask(TaskEntity task) {
-		TaskEntity updatedTask = taskDAO.updateTask(task);
-		if (updatedTask != null) {
-			return Response.ok().entity(updatedTask).build();
-		} else {
-			return Response.status(Status.BAD_REQUEST).build();
+	@Path("{taskId}/status")
+	public Response changeTaskStatus(@Context HttpServletRequest request, @PathParam("taskId") String taskId, ChangeStatusRequest statusChangeRequest) {
+		String loggedEmail = request.getRemoteUser();
+		if (loggedEmail == null) {
+			LOGGER.error("Failed attempt to retrieve user tasks!");
+			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
 		}
+		UserEntity refUser = userDAO.getUserByEmail(loggedEmail);
+
+		TaskEntity task = taskDAO.getTaskById(taskId);
+		TaskStatus requestedStatus = statusChangeRequest.getStatus();
+
+		createEvent(EventType.STATUS, task.getStatus().name(), requestedStatus.name(), refUser, task);
+
+		LOGGER.debug("Setting the status of task [{}] to [{}]", taskId, requestedStatus);
+		task.setStatus(requestedStatus);
+		taskDAO.updateTask(task);
+
+		return Response.ok(new Task(task)).build();
+	}
+	
+	@PUT
+	@Path("{taskId}/priority")
+	public Response changeTaskPriority(@Context HttpServletRequest request, @PathParam("taskId") String taskId, ChangePriorityRequest prioChangeRequest) {
+		String loggedEmail = request.getRemoteUser();
+		if (loggedEmail == null) {
+			LOGGER.error("Failed attempt to retrieve user tasks!");
+			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+		}
+		UserEntity refUser = userDAO.getUserByEmail(loggedEmail);
+
+		TaskEntity task = taskDAO.getTaskById(taskId);
+		Priority newPriority = prioChangeRequest.getPriority();
+
+		createEvent(EventType.PRIORITY, task.getPriority().name(), newPriority.name(), refUser, task);
+
+		LOGGER.debug("Setting the priority of task [{}] to [{}]", taskId, newPriority);
+		task.setPriority(newPriority);
+		taskDAO.updateTask(task);
+
+		return Response.ok(new Task(task)).build();
+	}
+	
+	private void createEvent(EventType type, String before, String after, UserEntity refUser, TaskEntity refTask) {
+		EventEntity event = new EventEntity();
+		event.setBefore(before);
+		event.setAfter(after);
+		event.setRefTask(refTask);
+		event.setRefUser(refUser);
+		event.setType(EventType.ASSIGNMENT);
+		event.setTimestamp(new Date());
+		eventBus.post(event);
 	}
 
 	@GET
@@ -180,10 +237,4 @@ public class TaskService {
 		}
 	}
 
-	@GET
-	public Response getTasksByCriteria(@QueryParam("username") String username, @QueryParam("limit") Integer limit,
-			@QueryParam("offset") Integer offset) {
-		// TODO TBD
-		return null;
-	}
 }

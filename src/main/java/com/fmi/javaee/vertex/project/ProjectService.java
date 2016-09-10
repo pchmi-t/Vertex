@@ -46,9 +46,9 @@ public class ProjectService {
 			return Response.status(HttpServletResponse.SC_NOT_FOUND).build();
 		}
 		
-		List<ProjectBean> projects = new ArrayList<>();
+		List<Project> projects = new ArrayList<>();
 		for (ProjectEntity projectEntity : projectsOfUser) {
-			projects.add(new ProjectBean(projectEntity));
+			projects.add(new Project(projectEntity));
 		}
 		return Response.ok(projects).build();
 	}
@@ -85,7 +85,7 @@ public class ProjectService {
 		}
 		
 		ProjectEntity createdProject = projectDAO.createProject(projectRequest, admins, members);
-		return Response.status(HttpServletResponse.SC_CREATED).entity(new ProjectBean(createdProject)).build();
+		return Response.status(HttpServletResponse.SC_CREATED).entity(new Project(createdProject)).build();
 	}
 
 }

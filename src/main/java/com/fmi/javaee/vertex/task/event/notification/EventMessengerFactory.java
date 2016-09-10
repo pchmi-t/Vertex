@@ -22,6 +22,10 @@ public class EventMessengerFactory {
 		switch (eventType) {
 		case ASSIGNMENT:
 			return injector.getInstance(AssignmentMessenger.class);
+		case STATUS:
+			return injector.getInstance(StatusChangeMessenger.class);
+		case PRIORITY:
+			return injector.getInstance(PriorityChangeMessenger.class);
 		default:
 			LOGGER.warn("Cannot find a suitable messenger for event type " + eventType);
 			return injector.getInstance(DefaultMessenger.class);

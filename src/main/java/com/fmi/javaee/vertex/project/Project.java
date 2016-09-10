@@ -9,7 +9,7 @@ import com.fmi.javaee.vertex.task.TaskEntity;
 import com.fmi.javaee.vertex.user.User;
 import com.fmi.javaee.vertex.user.UserEntity;
 
-public class ProjectBean {
+public class Project {
 
 	private String projectId;
 	private String projectName;
@@ -19,10 +19,10 @@ public class ProjectBean {
 	private Set<User> administrators = new HashSet<>();
 	private Set<Task> tasks = new HashSet<>();
 
-	public ProjectBean() {
+	public Project() {
 	}
 
-	public ProjectBean(ProjectEntity entity) {
+	public Project(ProjectEntity entity) {
 		this.projectId = entity.getProjectId();
 		this.projectName = entity.getProjectName();
 		this.projectDescription = entity.getProjectDescription();

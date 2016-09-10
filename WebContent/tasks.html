@@ -197,12 +197,11 @@
 				taskhtml += '<td>' + task.creator.fullName + '</td>';
 				taskhtml += '<td>' + new Date(task.creationTime).toDateString() + '</td>';
 				taskhtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td>';
-				taskhtml += '<td><a data-toggle="modal" href="#' + task.taskId + '"><span class="icon">&#61952;</span></a></td></tr>';
+				taskhtml += '<td><a data-toggle="modal" href="view-task.html?taskId=' + task.taskId + '"><span class="icon">&#61952;</span></a></td></tr>';
 				
 				if (task.status === 'IN_PROGRESS') {
 					ongoingTasks.push(task);
 				}
-				createTaskModal(task);
 			}
 			
 			if (ongoingTasks.length >= 2) {
@@ -230,26 +229,13 @@
 					taskhtml += '<td>' + ((task.asignee) ? task.asignee.fullName : "") + '</td>';
 					taskhtml += '<td>' + new Date(task.creationTime).toDateString() + '</td>';
 					taskhtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td>';
-					taskhtml += '<td><a data-toggle="modal" href="#' + task.taskId + '"><span class="icon">&#61952;</span></a></td></tr>';
-				
-					createTaskModal(task);
+					taskhtml += '<td><a data-toggle="modal" href="view-task.html?taskId=' + task.taskId + '"><span class="icon">&#61952;</span></a></td></tr>';
 				}
 				
 			}
 			
 			taskhtml += '</tbody></table></div></div>';
 			return taskhtml;
-		}
-		
-		function createTaskModal(task) {
-			var editHtml = '<div class="modal fade" id="' + task.taskId + '" tabindex="-1" role="dialog" aria-hidden="true">';
-			editHtml += '<div class="modal-dialog modal-lg"><div class="modal-dialog modal-lg"><div class="modal-content">';
-			editHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-			editHtml += '<h4 class="modal-title">'  + task.title + '</h4></div>';
-			editHtml += '<div class="modal-body"><p>' + task.definition + '</p>'
-			editHtml += '</modal-body><button type="submit" id="updatetaskbtn" class="btn btn-sm">Save changes</button>';
-			editHtml += '<button type="button" class="btn btn-sm" data-dismiss="modal">Close</button></div></div></div></div>';
-			$("#task-modals").append(editHtml);
 		}
 		
 	</script>

@@ -46,7 +46,7 @@ public class TaskEntity {
 
 	private Date modificationTime;
 
-	private Status status;
+	private TaskStatus status;
 
 	private Priority priority;
 
@@ -104,11 +104,11 @@ public class TaskEntity {
 	@Column(name = "status")
 	@JsonProperty
 	@Enumerated(EnumType.STRING)
-	public Status getStatus() {
+	public TaskStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(TaskStatus status) {
 		this.status = status;
 	}
 

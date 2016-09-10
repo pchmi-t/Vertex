@@ -24,7 +24,7 @@ class TaskDAOImpl implements TaskDAO {
 		task.setCreationTime(new Date());
 		task.setModificationTime(task.getCreationTime());
 		task.setLastModificator(task.getCreator());
-		task.setStatus(Status.NEW);
+		task.setStatus(TaskStatus.NEW);
 
 		EntityManager entityManager = entityManagerProvider.get();
 		entityManager.getTransaction().begin();

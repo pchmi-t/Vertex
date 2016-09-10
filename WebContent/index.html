@@ -278,7 +278,7 @@
 		actionsHtml += '<li><a class="assignself" id="' + task.taskId +  '">Assign to Me</a></li>';
 		if (isUserGod()) {
 			actionsHtml += '<li><a href="#">Assign</a></li>';
-			actionsHtml += '<li><a href="#">Edit Details</a>';
+			actionsHtml += '<li><a href="view-task.html?taskId='+ task.taskId + '">Edit Details</a>';
 			actionsHtml += '</li><li class="divider">';
 			actionsHtml += '</li><li><a href="#"><span class="icon">&#61754;</span> Delete Task</a></li>';
 		}

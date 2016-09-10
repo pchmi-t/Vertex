@@ -13,7 +13,7 @@ public class Task {
 
 	private Date modificationTime;
 
-	private Status status;
+	private TaskStatus status;
 
 	private Priority priority;
 
@@ -27,7 +27,11 @@ public class Task {
 
 	private String title;
 
+	private String projectName;
+
 	private String projectId;
+	
+	private int subscribersCount;
 
 	public Task(TaskEntity taskEntity) {
 		this.taskId = taskEntity.getTaskId();
@@ -36,12 +40,20 @@ public class Task {
 		this.definition = taskEntity.getDefinition();
 		this.priority = taskEntity.getPriority();
 		this.projectId = taskEntity.getProject().getProjectId();
+		this.projectName = taskEntity.getProject().getProjectName();
 		this.asignee = getUser(taskEntity.getAsignee());
 		this.creator = getUser(taskEntity.getCreator());
 		this.lastModificator = getUser(taskEntity.getLastModificator());
 		this.status = taskEntity.getStatus();
 		this.title = taskEntity.getTitle();
+		this.subscribersCount = taskEntity.getSubscriptions().size();
 	}
+	
+	public int getSubscribersCount() {
+		return subscribersCount;
+	}
+
+
 
 	private User getUser(UserEntity user) {
 		return user != null ? new User(user) : null;
@@ -66,6 +78,10 @@ public class Task {
 		this.creationTime = creationTime;
 	}
 
+	public String getProjectName() {
+		return projectName;
+	}
+
 	public Date getModificationTime() {
 		return modificationTime;
 	}
@@ -74,11 +90,11 @@ public class Task {
 		this.modificationTime = modificationTime;
 	}
 
-	public Status getStatus() {
+	public TaskStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(TaskStatus status) {
 		this.status = status;
 	}
 
