@@ -1,0 +1,14 @@
+<html>
+    <head>
+      <title>Task commented by $othername</title>
+    </head>
+    <body>
+      
+ 		<p>Dear $name,</p><br/>
+ 		<p>$othername left a comment on Vertex task [$taskid] for which you are subscribed.</p>
+ 		<blockquote>$comment</blockquote><br/>
+ 		<p>Kind regards,</p>
+ 		<p>Vertex Team</p>
+ 
+   </body>
+ </html>

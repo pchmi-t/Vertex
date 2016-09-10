@@ -108,8 +108,8 @@
 										data-toggle="dropdown">Critical</button>
 								</div>
 								<div class="btn-group m-b-5">
-									<button type="button" class="btn btn-sm dropdown-toggle"
-										data-toggle="dropdown">12 Comments</button>
+									<button id="task-comments-count" type="button" class="btn btn-sm dropdown-toggle"
+										data-toggle="dropdown"></button>
 								</div>
 								<div class="btn-group m-b-5">
 									<button id="task-subsc" type="button" class="btn btn-sm dropdown-toggle"
@@ -149,20 +149,8 @@
 					</div>
 				</div>
 
-				<div class="block-area" id="well">
+				<div id="comments-section" class="block-area" id="well">
 					<h3 class="block-title">Comments</h3>
-					<div class="media-body">Hristo Todorov at at 9/10/2016,
-						12:12:16 AM</div>
-					<div class="well tile">Cras sit amet nibh libero, in gravida
-						nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras
-						purus odio, vestibulum in vulputate at, tempus viverra turpis.
-						Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia
-						congue felis in faucibus.</div>
-
-					<div class="media-body">Tanya Hristova at at 9/10/2016,
-						12:12:16 AM</div>
-					<div class="well tile">Cras sit amet nibh libero, in gravida
-						nulla. Nulla vel metus scele!!!</div>
 				</div>
 				<div class="block-area" id="well">
 					<form class="row form-columned" role="form">
@@ -228,17 +216,15 @@
 	<!-- Calendar -->
 	<script src="/vertex/resources/js/feeds.min.js"></script>
 	<script src="/vertex/resources/js/markdown.min.js"></script>
-	<!-- WYSIWYG Editor -->
-	<!-- News Feeds -->
 
-
-	<!-- Custom Multi Select -->
-	<!-- Custom Select -->
 	<script src="/vertex/resources/js/functions.js"></script>
 	<script src="/vertex/resources/js/template.js"></script>
 
 	<script>
 		$(document).ready(function() {
+			user = getUser();
+			getEvents();
+			
 			var taskId = getParameterByName("taskId", document.URL);
 			if (!taskId) {
 				window.location.replace('404.html')
@@ -278,6 +264,45 @@
 			
 			showPriority(task);
 			showStatus(task);
+			showComments(task);
+		}
+		
+		function showComments(task) {
+			var comments = task.comments;
+			var commentCount = (comments) ? comments.length : 0;
+			$("#task-comments-count").append(commentCount + ' Comments');
+			if (commentCount > 0) {
+				var commentsHtml = '';
+				for (i = 0; i < commentCount; i++) {
+					var comment = comments[i];
+					commentsHtml += '<div class="media-body">' + comment.commentator +' at at ' + new Date(comment.creationTime).toLocaleString() + '</div>';
+					commentsHtml += '<div class="well tile">' + comment.content + '</div>';
+				}
+				$("#comments-section").append(commentsHtml);
+			} else {
+				$("#comments-section").append('<div class="well tile"><i>No comments for this task yet.</i></div>');
+			}
+			
+			$("#submitcomment").on('click', function(event) {
+				event.preventDefault();
+				
+				var commentData = {
+					content : $("#taskdef").val(),
+				};
+				
+				$.ajax({
+					url : "/vertex/api/task/" + task.taskId + '/comment',
+					type : "POST",
+					data : JSON.stringify(eval(commentData)),
+					contentType: "application/json",
+					success : function() {
+						location.reload();
+					},
+					error : function(jqXHR) {
+						alert("Unfortunately, your comment could not be submitted.")
+					}
+				});
+			});
 		}
 		
 		function showPriority(task) {

@@ -1,5 +1,6 @@
 package com.fmi.javaee.vertex.task;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.project.ProjectEntity;
+import com.fmi.javaee.vertex.task.comment.CommentEntity;
 import com.fmi.javaee.vertex.task.event.subscription.SubscriptionEntity;
 import com.fmi.javaee.vertex.user.UserEntity;
 
@@ -64,15 +66,27 @@ public class TaskEntity {
 
 	private List<SubscriptionEntity> subscriptions;
 
-	// private Project project;
+	private List<CommentEntity> comments;
 
 	@Id
-	@GeneratedValue(generator = "sequence_task_id")  
+	@GeneratedValue(generator = "sequence_task_id")
 	@GenericGenerator(name = "sequence_task_id", strategy = "com.fmi.javaee.vertex.task.TaskIdGenerator")
 	@JsonProperty
 	@Column(name = "taskId", unique = true, nullable = false)
 	public String getTaskId() {
 		return taskId;
+	}
+
+	@OneToMany
+	public List<CommentEntity> getComments() {
+		if (comments == null ) {
+			comments = new ArrayList<>();
+		}
+		return comments;
+	}
+
+	public void setComments(List<CommentEntity> comments) {
+		this.comments = comments;
 	}
 
 	public void setTaskId(String taskId) {
@@ -193,6 +207,13 @@ public class TaskEntity {
 
 	public void setSubscriptions(List<SubscriptionEntity> subscriptions) {
 		this.subscriptions = subscriptions;
+	}
+
+	public void addComment(CommentEntity commentEntity) {
+		if (comments == null) {
+			comments = new ArrayList<>();
+		}
+		comments.add(commentEntity);
 	}
 
 }

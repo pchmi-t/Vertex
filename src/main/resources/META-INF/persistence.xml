@@ -10,6 +10,7 @@
 		<class>com.fmi.javaee.vertex.task.event.EventEntity</class>
 		<class>com.fmi.javaee.vertex.project.ProjectEntity</class>
 		<class>com.fmi.javaee.vertex.task.event.subscription.SubscriptionEntity</class>
+		<class>com.fmi.javaee.vertex.task.comment.CommentEntity</class>
 
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>

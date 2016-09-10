@@ -187,7 +187,7 @@ public class TaskService {
 		event.setAfter(after);
 		event.setRefTask(refTask);
 		event.setRefUser(refUser);
-		event.setType(EventType.ASSIGNMENT);
+		event.setType(type);
 		event.setTimestamp(new Date());
 		eventBus.post(event);
 	}

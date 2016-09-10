@@ -201,15 +201,12 @@
 					url : "/vertex/api/task/project/" + getParameterByName('projectId'),
 					type : "POST",
 					data : JSON.stringify(eval(task)),
-					headers : {
-						"Content-type" : "application/json"
-					},
+					contentType: "application/json",
 					success : function() {
-						alert("Task was created!");
-						window.location.href = '/vertex/index.html';
+						location.reload();
 					},
 					error : function(jqXHR) {
-						alert("nope")
+						alert("Unfortunately, this task could not be created.")
 					}
 				});
 			});

@@ -1,7 +1,11 @@
 package com.fmi.javaee.vertex.task;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import com.fmi.javaee.vertex.task.comment.Comment;
+import com.fmi.javaee.vertex.task.comment.CommentEntity;
 import com.fmi.javaee.vertex.user.User;
 import com.fmi.javaee.vertex.user.UserEntity;
 
@@ -30,7 +34,9 @@ public class Task {
 	private String projectName;
 
 	private String projectId;
-	
+
+	private List<Comment> comments;
+
 	private int subscribersCount;
 
 	public Task(TaskEntity taskEntity) {
@@ -46,14 +52,37 @@ public class Task {
 		this.lastModificator = getUser(taskEntity.getLastModificator());
 		this.status = taskEntity.getStatus();
 		this.title = taskEntity.getTitle();
+		this.comments = convertComments(taskEntity.getComments());
 		this.subscribersCount = taskEntity.getSubscriptions().size();
 	}
-	
+
+	private List<Comment> convertComments(List<CommentEntity> commentEntities) {
+		List<Comment> comments = new ArrayList<>();
+		for (CommentEntity commentEntity : commentEntities) {
+			comments.add(new Comment(commentEntity));
+		}
+		return comments;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public void setSubscribersCount(int subscribersCount) {
+		this.subscribersCount = subscribersCount;
+	}
+
 	public int getSubscribersCount() {
 		return subscribersCount;
 	}
-
-
 
 	private User getUser(UserEntity user) {
 		return user != null ? new User(user) : null;

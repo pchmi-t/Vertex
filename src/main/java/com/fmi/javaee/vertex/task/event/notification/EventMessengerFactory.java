@@ -3,6 +3,7 @@ package com.fmi.javaee.vertex.task.event.notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fmi.javaee.vertex.task.comment.CommentMessenger;
 import com.fmi.javaee.vertex.task.event.EventType;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -26,6 +27,8 @@ public class EventMessengerFactory {
 			return injector.getInstance(StatusChangeMessenger.class);
 		case PRIORITY:
 			return injector.getInstance(PriorityChangeMessenger.class);
+		case COMMENT:
+			return injector.getInstance(CommentMessenger.class);
 		default:
 			LOGGER.warn("Cannot find a suitable messenger for event type " + eventType);
 			return injector.getInstance(DefaultMessenger.class);

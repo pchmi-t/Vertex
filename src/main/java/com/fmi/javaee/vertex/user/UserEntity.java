@@ -28,6 +28,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.project.ProjectEntity;
 import com.fmi.javaee.vertex.task.TaskEntity;
+import com.fmi.javaee.vertex.task.comment.CommentEntity;
 import com.fmi.javaee.vertex.task.event.subscription.SubscriptionEntity;
 
 @Entity
@@ -88,6 +89,8 @@ public class UserEntity {
 	private long tasksExecutedCount;
 
 	private long taskInvolvementsCount;
+	
+	private List<CommentEntity> comments;
 
 	@Column(name = "password")
 	@Transient
@@ -142,6 +145,18 @@ public class UserEntity {
 
 	public void setJobTitle(String jobTitle) {
 		this.jobTitle = jobTitle;
+	}
+	
+	@OneToMany(mappedBy = "commentator")
+	public List<CommentEntity> getComments() {
+		if (comments == null ) {
+			comments = new ArrayList<>();
+		}
+		return comments;
+	}
+
+	public void setComments(List<CommentEntity> comments) {
+		this.comments = comments;
 	}
 
 	@javax.persistence.Transient
