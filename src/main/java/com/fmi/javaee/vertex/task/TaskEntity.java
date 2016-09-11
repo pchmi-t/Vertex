@@ -23,6 +23,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.fmi.javaee.vertex.project.ProjectEntity;
 import com.fmi.javaee.vertex.task.comment.CommentEntity;
@@ -77,6 +78,7 @@ public class TaskEntity {
 	@JoinColumn(name = "creatorId")
 	private UserEntity creator;
 
+	@NotBlank
 	@Column(name = "title", updatable = false)
 	private String title;
 

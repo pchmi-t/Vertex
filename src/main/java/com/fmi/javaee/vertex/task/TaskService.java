@@ -92,7 +92,6 @@ public class TaskService {
 		}
 
 		UserEntity creator = userDAO.getUserByEmail(loggedEmail);
-
 		taskRequest.setProject(project);
 		taskRequest.setCreator(creator);
 		taskRequest.setStatus(TaskStatus.NEW);
@@ -135,6 +134,7 @@ public class TaskService {
 		createEvent(EventType.ASSIGNMENT, previsousAsignee, requestedAssignee, assignee, task);
 
 		LOGGER.debug("Assigning task [{}] to user [{}]", taskId, requestedAssignee);
+		task.setStatus(TaskStatus.ACCEPTED);
 		task.setAsignee(assignee);
 		taskDAO.updateTask(task);
 

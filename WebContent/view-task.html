@@ -92,6 +92,8 @@
 				<h4 id="tasktitle" class="page-title"></h4>
 
 				<div class="block-area">
+					<div id="deadline-alert" class="alert alert-warning" hidden=true></div>
+					<div id="deadline-dang" class="alert alert-danger" hidden=true></div>
 					<div class="row">
 						<div class="col-md-9">
 							<div class="tile-light p-5 m-b-15">
@@ -119,12 +121,14 @@
 						</div>
 
 						<div class="col-md-3">
-
-							<!-- About Me -->
 							<div class="tile">
 								<h2 class="tile-title">Task Details</h2>
-
 								<div class="listview icon-list">
+									<div class="media">
+										<i class="icon pull-left">&#61733</i>
+										<div id="taskdet-deadline" class="media-body">Deadline
+											is </div>
+									</div>
 									<div class="media">
 										<i class="icon pull-left">&#61784</i>
 										<div id="taskdet-id" class="media-body"></div>
@@ -135,12 +139,12 @@
 									</div>
 
 									<div class="media">
-										<i class="icon pull-left">&#61868</i>
+										<i class="icon pull-left">&#61769</i>
 										<div id="taskdet-cre-date" class="media-body">Created at </div>
 									</div>
 
 									<div class="media">
-										<i class="icon pull-left">&#61766</i>
+										<i class="icon pull-left">&#61840</i>
 										<div id="taskdet-mod-date" class="media-body">Last modified at </div>
 									</div>
 								</div>
@@ -148,7 +152,6 @@
 						</div>
 					</div>
 				</div>
-
 				<div id="comments-section" class="block-area" id="well">
 					<h3 class="block-title">Comments</h3>
 				</div>
@@ -254,6 +257,7 @@
 			$("#task-subsc").append(task.subscribersCount + " Watchers");
 			$("#taskdet-cre-date").append(new Date(task.creationTime).toLocaleString());
 			$("#taskdet-mod-date").append(new Date(task.modificationTime).toLocaleString());
+			$("#taskdet-deadline").append(new Date(task.deadline).toLocaleString());
 			
 			var taskDef = task.definition;
 			if (!taskDef) {
@@ -265,6 +269,24 @@
 			showPriority(task);
 			showStatus(task);
 			showComments(task);
+			showDeadlineAlerts(task);
+		}
+		
+		function showDeadlineAlerts(task) {
+			var status = task.status;
+			if (task.status === 'RESOLVED') {
+				return;
+			}
+			
+			var delta = (new Date(task.deadline) - new Date()) / 1000;
+			var remaining = Math.floor(delta / 3600) % 24;
+			if (remaining < 0) {
+				$("#deadline-dang").append("Task is overdue. It should have been resolved before " + new Date(task.deadline).toLocaleString());
+				$("#deadline-dang").show();
+			} else if (remaining < 24) {
+				$("#deadline-alert").append("Less than a day remains until the deadline. Hurry up.");
+				$("#deadline-alert").show();
+			}
 		}
 		
 		function showComments(task) {
@@ -401,6 +423,20 @@
 		
 		function capitalize(s){
 		    return s.toLowerCase().replace( /\b./g, function(a){ return a.toUpperCase(); } );
+		}
+		
+
+		function initializeClock(id, endtime) {
+			var clock = document.getElementById(id);
+			var timeinterval = setInterval(function() {
+				var t = getTimeRemaining(endtime);
+				clock.innerHTML = 'days: ' + t.days + '<br>' + 'hours: '
+						+ t.hours + '<br>' + 'minutes: ' + t.minutes + '<br>'
+						+ 'seconds: ' + t.seconds;
+				if (t.total <= 0) {
+					clearInterval(timeinterval);
+				}
+			}, 1000);
 		}
 	</script>
 </body>

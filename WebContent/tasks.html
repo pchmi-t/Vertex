@@ -97,6 +97,7 @@
 					<ul id="page-custom-title" class="list-inline page-title b-0"><input class="list-inline input-sm col-md-4 pull-right message-search" type="text" placeholder="Search...."></ul>
 					<div class="clearfix"></div>
 				</header>
+				<div id="multiple-task-alert" class="alert alert-warning" hidden=true></div>
 				<div id="tasklist"></div>
 				<div id="created-tasklist"></div>
 			</div>
@@ -199,14 +200,14 @@
 				taskhtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td>';
 				taskhtml += '<td><a data-toggle="modal" href="view-task.html?taskId=' + task.taskId + '"><span class="icon">&#61952;</span></a></td></tr>';
 				
-				if (task.status === 'IN_PROGRESS') {
+				if (task.status !== 'IN_PROGRESS') {
 					ongoingTasks.push(task);
 				}
 			}
 			
 			if (ongoingTasks.length >= 2) {
-				$("#alert-area").append('You have ' + ongoingTasks.length + ' tasks in execution at the moment. Think about finishing them before accepting any more tasks.');
-				$("#alert-area").show();
+				$("#multiple-task-alert").append('You have ' + ongoingTasks.length + ' tasks in execution at the moment. Think about finishing them before accepting any more tasks.');
+				$("#multiple-task-alert").show();
 			}
 			
 			taskhtml += '</tbody></table></div></div>';
