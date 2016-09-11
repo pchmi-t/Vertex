@@ -24,7 +24,7 @@ public class AuthenticationProvider {
 	public UserAuthentication authenticate(String email, char[] password) throws AuthenticationException {
 		UserEntity user = userDAO.getUser(email, password);
 		 if (user != null) {
-			 return new UserAuthentication(user.getUsername());
+			 return new UserAuthentication(user.getUsername(), user.getIsGod());
 		 }
 		throw new AuthenticationException("Cannot authenticate user with email: " + email);
 	}

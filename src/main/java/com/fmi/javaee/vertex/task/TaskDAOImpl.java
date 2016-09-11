@@ -37,6 +37,7 @@ class TaskDAOImpl implements TaskDAO {
 	@Override
 	@Transactional
 	public TaskEntity updateTask(TaskEntity task) {
+		task.setModificationTime(new Date());
 		EntityManager entityManager = entityManagerProvider.get();
 		TaskEntity updatedTask = entityManager.merge(task);
 		return updatedTask;

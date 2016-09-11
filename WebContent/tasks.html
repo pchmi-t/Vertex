@@ -62,10 +62,9 @@
 					<div class="list-group list-group-flat m-t-15">
 						<a class="list-group-item active">Tasks<span id="tasksCount"
 							class="badge badge-trp">X</span></a> 
-							<a href="#" class="list-group-item"><span class="message-tag progress-bar-info"></span>In Progress</a>
-							<a href="#" class="list-group-item"><span class="message-tag progress-bar-success"></span>Resolved</a>
-							<a href="#" class="list-group-item"><span class="message-tag progress-bar-danger"></span>Blocked</a>
-							<a href="#" class="list-group-item"><span class="message-tag progress-bar-warning"></span>Accepted</a>
+							<a href="#" class="list-group-item"><span id="ledend-progress" class="message-tag"></span>In Progress</a>
+							<a href="#" class="list-group-item"><span id="ledend-res" class="message-tag"></span>Resolved</a>
+							<a href="#" class="list-group-item"><span id="ledend-accept" class="message-tag"></span>Accepted</a>
 					</div>
 
 				</div>
@@ -188,7 +187,10 @@
 			taskhtml += '<th>Status</th><th>Priority</th><th>ID</th><th>Title</th><th>Created By</th><th>Date Greated</th><th>Last Updated</th>';
 			taskhtml += '<th>Edit</th></tr></thead><tbody>';
 			
-			var ongoingTasks = [];
+			var inProgressTasks = 0;
+			var resolvedTasks = 0;
+			var acceptedTasks = 0;
+			
 			for (index = 0; index < tasks.length; index++) {
 				var task = tasks[index];
 				taskhtml += '<tr><td>' + showEnum(task.status) + '</td>';
@@ -200,13 +202,22 @@
 				taskhtml += '<td>' + new Date(task.modificationTime).toDateString() + '</td>';
 				taskhtml += '<td><a data-toggle="modal" href="view-task.html?taskId=' + task.taskId + '"><span class="icon">&#61952;</span></a></td></tr>';
 				
-				if (task.status !== 'IN_PROGRESS') {
-					ongoingTasks.push(task);
+				if (task.status === 'IN_PROGRESS') {
+					inProgressTasks++;
+				} else if (task.status === 'ACCEPTED') {
+					acceptedTasks++;
+				} else if (task.status === 'RESOLVED') {
+					resolvedTasks++;
 				}
 			}
 			
-			if (ongoingTasks.length >= 2) {
-				$("#multiple-task-alert").append('You have ' + ongoingTasks.length + ' tasks in execution at the moment. Think about finishing them before accepting any more tasks.');
+			$("#ledend-progress").append(inProgressTasks);
+			$("#ledend-res").append(resolvedTasks);
+			$("#ledend-accept").append(acceptedTasks);
+			
+			var ongoingCount = (tasks.length - resolvedTasks);
+			if (ongoingCount >= 2) {
+				$("#multiple-task-alert").append('You are assigned to ' + ongoingCount + ' unresolved tasks at the moment. Think about finishing them before accepting any more tasks.');
 				$("#multiple-task-alert").show();
 			}
 			

@@ -25,6 +25,7 @@ public class VertexLoginModule implements LoginModule {
 	private static final String PASSWORD_CALLBACK_PROMPT = "password";
 
 	private static final String VERTEX_USER_DEFAULT_ROLE = "VertexUser";
+	private static final String VERTEX_ADMIN_ROLE = "VertexAdmin";
 
 	private CallbackHandler handler;
 	private NameCallback emailCallback;
@@ -70,6 +71,9 @@ public class VertexLoginModule implements LoginModule {
 			authentication = AuthenticationProvider.getInstance().authenticate(email, password);
 			this.userPrincipal = new UserPrincipal(authentication.getUsername());
 			this.userRoles.add(new RolePrincipal(VERTEX_USER_DEFAULT_ROLE));
+			if (authentication.isGod()) {
+				this.userRoles.add(new RolePrincipal(VERTEX_ADMIN_ROLE));
+			}
 			return true;
 		} catch (AuthenticationException e) {
 			return false;

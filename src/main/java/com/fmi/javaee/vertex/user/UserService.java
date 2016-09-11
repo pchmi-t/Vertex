@@ -26,7 +26,7 @@ public class UserService {
 	private final UserDAO userDAO;
 	
 	@Inject
-	public UserService( UserDAO userDAO) {
+	public UserService(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
 
