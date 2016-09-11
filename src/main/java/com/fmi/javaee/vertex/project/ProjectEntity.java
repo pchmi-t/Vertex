@@ -19,49 +19,46 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.NotBlank;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.task.TaskEntity;
 import com.fmi.javaee.vertex.user.UserEntity;
 
 @Entity
 @Table(name = "Projects")
-@NamedQueries({ @NamedQuery(name = ProjectEntity.GET_BY_USER, query = "SELECT p FROM ProjectEntity p JOIN p.members m WHERE m.email = :mEmail") })
+@NamedQueries({
+		@NamedQuery(name = ProjectEntity.GET_BY_USER, query = "SELECT p FROM ProjectEntity p JOIN p.members m WHERE m.email = :mEmail") })
 public class ProjectEntity {
 
 	static final String GET_BY_USER = "getByUser";
 
-	private String projectId;
-	
-	private String projectName;
-	
-	private String projectDescription;
-	
-	private Set<UserEntity> members = new HashSet<>();
-	
-	private Set<UserEntity> administrators = new HashSet<>();
-	
-	private Set<TaskEntity> tasks = new HashSet<>();
-	
-	private Date creationTime;
-
 	@Id
-	@JsonProperty
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(name = "projectId", unique = true, nullable = false)
-	public String getProjectId() {
-		return projectId;
-	}
+	@GeneratedValue
+	private long projectId;
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+	@Column(name = "projectName")
+	private String projectName;
+
+	@Column(name = "projectDescription", length=2000)
+	private String projectDescription;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "projectMembers", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "userId"))
+	private Set<UserEntity> members = new HashSet<>();
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "projectAdmins", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "userId"))
+	private Set<UserEntity> administrators = new HashSet<>();
+
+	@OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+	private Set<TaskEntity> tasks = new HashSet<>();
+
+	@Column(name = "creationTime")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date creationTime;
+
+	public long getProjectId() {
+		return projectId;
+	}
+
 	public Set<UserEntity> getMembers() {
 		return members;
 	}
@@ -70,8 +67,6 @@ public class ProjectEntity {
 		this.members = members;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "projectAdmins", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "userId"))
 	public Set<UserEntity> getAdministrators() {
 		return administrators;
 	}
@@ -80,7 +75,6 @@ public class ProjectEntity {
 		this.administrators = administrators;
 	}
 
-	@OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
 	public Set<TaskEntity> getTasks() {
 		return tasks;
 	}
@@ -89,9 +83,6 @@ public class ProjectEntity {
 		this.tasks = tasks;
 	}
 
-	@JsonProperty
-	@Column(name = "creationTime")
-	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreationTime() {
 		return creationTime;
 	}
@@ -100,9 +91,6 @@ public class ProjectEntity {
 		this.creationTime = creationTime;
 	}
 
-	@JsonProperty
-	@Column(name = "projectName")
-	@NotBlank(message = "The name of the project can not be blank.")
 	public String getProjectName() {
 		return projectName;
 	}
@@ -111,8 +99,6 @@ public class ProjectEntity {
 		this.projectName = projectName;
 	}
 
-	@JsonProperty
-	@Column(name = "projectDescription")
 	public String getProjectDescription() {
 		return projectDescription;
 	}

@@ -1,7 +1,5 @@
 package com.fmi.javaee.vertex.user;
 
-import java.beans.Transient;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,18 +19,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fmi.javaee.vertex.project.ProjectEntity;
 import com.fmi.javaee.vertex.task.TaskEntity;
 import com.fmi.javaee.vertex.task.comment.CommentEntity;
 import com.fmi.javaee.vertex.task.event.subscription.SubscriptionEntity;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 @NamedQueries({ @NamedQuery(name = UserEntity.GET_ALL_USERS, query = UserEntity.GET_ALL_USERS_QUERY),
 		@NamedQuery(name = UserEntity.GET_BY_USERNAME, query = UserEntity.GET_BY_USERNAME_QUERY),
 		@NamedQuery(name = UserEntity.GET_BY_EMAIL, query = UserEntity.GET_BY_EMAIL_QUERY),
@@ -43,9 +38,9 @@ public class UserEntity {
 	static final String GET_ALL_USERS = "getAllUsers";
 
 	static final String GET_ALL_USERS_QUERY = "SELECT u FROM UserEntity u";
-	
+
 	static final String GET_BY_EMAIL = "getByEmail";
-	
+
 	static final String GET_BY_EMAIL_QUERY = "SELECT u FROM UserEntity u WHERE u.email = :email";
 
 	static final String GET_BY_USERNAME = "getByUsername";
@@ -56,44 +51,48 @@ public class UserEntity {
 
 	static final String GET_BY_EMAIL_PASS_QUERY = "SELECT u FROM UserEntity u WHERE u.email = :email AND u.password = :password";
 
-	private String userId;
+	@Id
+	@GeneratedValue
+	private long userId;
 
+	@Column(name = "jobTitle")
 	private String jobTitle;
 
+	@Column(unique = true, name = "username")
 	private String username;
 
+	@Column(name = "fullname")
 	private String fullName;
 
+	@Column(name = "gender")
+	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
 	private String password;
 
+	@Email
+	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 
+	@Column(name = "isGod")
+	@ColumnDefault("false")
 	private Boolean isGod;
 
+	@OneToMany(mappedBy = "asignee")
 	private Collection<TaskEntity> assignedTasks = new ArrayList<>();
 
+	@ManyToMany(mappedBy = "members")
 	private Collection<ProjectEntity> memberProjects = new ArrayList<>();
 
+	@ManyToMany(mappedBy = "administrators")
 	private Collection<ProjectEntity> adminProjects = new ArrayList<>();
-	
-    private List<SubscriptionEntity> subscriptions;
 
-	private Duration averageTaskEcecutionTime;
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "subscribedUser")
+	private List<SubscriptionEntity> subscriptions;
 
-	private Duration averageInvolvementResponseTime;
-
-	private int projectsInvolvedCount;
-
-	private long tasksExecutedCount;
-
-	private long taskInvolvementsCount;
-	
+	@OneToMany(mappedBy = "commentator")
 	private List<CommentEntity> comments;
 
-	@Column(name = "password")
-	@Transient
 	public String getPassword() {
 		return password;
 	}
@@ -102,9 +101,6 @@ public class UserEntity {
 		this.password = password;
 	}
 
-	@Email
-	@JsonProperty
-	@Column(name = "email", unique = true, nullable = false)
 	public String getEmail() {
 		return email;
 	}
@@ -113,9 +109,6 @@ public class UserEntity {
 		this.email = email;
 	}
 
-	@Column(name = "isGod")
-	@JsonProperty
-	@ColumnDefault("false")
 	public Boolean getIsGod() {
 		return isGod;
 	}
@@ -124,21 +117,10 @@ public class UserEntity {
 		this.isGod = isGod;
 	}
 
-	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@JsonProperty
-	@Column(name = "userId", unique = true, nullable = false)
-	public String getUserId() {
+	public long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	@Column(name = "jobTitle")
-	@JsonProperty
 	public String getJobTitle() {
 		return jobTitle;
 	}
@@ -146,10 +128,9 @@ public class UserEntity {
 	public void setJobTitle(String jobTitle) {
 		this.jobTitle = jobTitle;
 	}
-	
-	@OneToMany(mappedBy = "commentator")
+
 	public List<CommentEntity> getComments() {
-		if (comments == null ) {
+		if (comments == null) {
 			comments = new ArrayList<>();
 		}
 		return comments;
@@ -159,54 +140,6 @@ public class UserEntity {
 		this.comments = comments;
 	}
 
-	@javax.persistence.Transient
-	public Duration getAverageTaskEcecutionTime() {
-		return averageTaskEcecutionTime;
-	}
-
-	public void setAverageTaskEcecutionTime(Duration averageTaskEcecutionTime) {
-		this.averageTaskEcecutionTime = averageTaskEcecutionTime;
-	}
-
-	@javax.persistence.Transient
-	public Duration getAverageInvolvementResponseTime() {
-		return averageInvolvementResponseTime;
-	}
-
-	public void setAverageInvolvementResponseTime(Duration averageInvolvementResponseTime) {
-		this.averageInvolvementResponseTime = averageInvolvementResponseTime;
-	}
-
-	@javax.persistence.Transient
-	public int getProjectsInvolvedCount() {
-		return projectsInvolvedCount;
-	}
-
-	public void setProjectsInvolvedCount(int projectsInvolvedCount) {
-		this.projectsInvolvedCount = projectsInvolvedCount;
-	}
-
-	@javax.persistence.Transient
-	public long getTasksExecutedCount() {
-		return tasksExecutedCount;
-	}
-
-	public void setTasksExecutedCount(long tasksExecutedCount) {
-		this.tasksExecutedCount = tasksExecutedCount;
-	}
-
-	@javax.persistence.Transient
-	public long getTaskInvolvementsCount() {
-		return taskInvolvementsCount;
-	}
-
-	public void setTaskInvolvementsCount(long taskInvolvementsCount) {
-		this.taskInvolvementsCount = taskInvolvementsCount;
-	}
-
-	@JsonProperty
-	@Column(unique = true, name = "username")
-	@NotBlank(message = "The username can not be blank.")
 	public String getUsername() {
 		return username;
 	}
@@ -215,9 +148,6 @@ public class UserEntity {
 		this.username = name;
 	}
 
-	@JsonProperty
-	@Column(name = "fullname")
-	@NotBlank(message = "The username can not be blank.")
 	public String getFullName() {
 		return fullName;
 	}
@@ -226,9 +156,6 @@ public class UserEntity {
 		this.fullName = name;
 	}
 
-	@Column(name = "gender")
-	@JsonProperty
-	@Enumerated(EnumType.STRING)
 	public Gender getGender() {
 		return gender;
 	}
@@ -237,7 +164,6 @@ public class UserEntity {
 		this.gender = gender;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "asignee", cascade = CascadeType.ALL)
 	public Collection<TaskEntity> getAssignedTasks() {
 		return assignedTasks;
 	}
@@ -246,7 +172,6 @@ public class UserEntity {
 		this.assignedTasks = assignedTasks;
 	}
 
-	@ManyToMany(mappedBy = "members")
 	public Collection<ProjectEntity> getMemberProjects() {
 		return memberProjects;
 	}
@@ -255,7 +180,6 @@ public class UserEntity {
 		this.memberProjects = memberProjects;
 	}
 
-	@ManyToMany(mappedBy = "administrators")
 	public Collection<ProjectEntity> getAdminProjects() {
 		return adminProjects;
 	}
@@ -263,8 +187,7 @@ public class UserEntity {
 	public void setAdminProjects(Collection<ProjectEntity> adminProjects) {
 		this.adminProjects = adminProjects;
 	}
-	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "subscribedUser")
+
 	public List<SubscriptionEntity> getSubscriptions() {
 		return subscriptions;
 	}

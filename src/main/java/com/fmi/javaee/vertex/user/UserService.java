@@ -47,7 +47,7 @@ public class UserService {
 
 	@GET
 	@Path("/{userId}")
-	public Response getUser(@PathParam("userId") String userId) {
+	public Response getUser(@PathParam("userId") Long userId) {
 		UserEntity user = new UserEntity();
 		user = userDAO.getUser(userId);
 		if (user == null) {

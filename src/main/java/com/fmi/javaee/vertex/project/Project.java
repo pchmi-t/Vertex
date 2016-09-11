@@ -11,22 +11,20 @@ import com.fmi.javaee.vertex.user.UserEntity;
 
 public class Project {
 
-	private String projectId;
-	private String projectName;
-	private String projectDescription;
-	private Date creationTime;
-	private Set<User> members = new HashSet<>();
-	private Set<User> administrators = new HashSet<>();
-	private Set<Task> tasks = new HashSet<>();
-
-	public Project() {
-	}
+	private final long projectId;
+	private final String projectName;
+	private final String projectDescription;
+	private final Date creationTime;
+	private final Set<User> members = new HashSet<>();
+	private final Set<User> administrators = new HashSet<>();
+	private final Set<Task> tasks = new HashSet<>();
 
 	public Project(ProjectEntity entity) {
 		this.projectId = entity.getProjectId();
 		this.projectName = entity.getProjectName();
 		this.projectDescription = entity.getProjectDescription();
 		this.creationTime = entity.getCreationTime();
+
 		for (UserEntity adminEntity : entity.getAdministrators()) {
 			this.administrators.add(new User(adminEntity));
 		}
@@ -34,67 +32,38 @@ public class Project {
 		for (UserEntity memberEntity : entity.getMembers()) {
 			this.members.add(new User(memberEntity));
 		}
-		
-		tasks = new HashSet<Task>();
+
 		for (TaskEntity task : entity.getTasks()) {
 			tasks.add(new Task(task));
 		}
 	}
 
-	public String getProjectId() {
+	public long getProjectId() {
 		return projectId;
-	}
-
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
 	}
 
 	public Date getCreationTime() {
 		return creationTime;
 	}
 
-	public void setCreationTime(Date creationTime) {
-		this.creationTime = creationTime;
-	}
-
 	public Set<User> getMembers() {
 		return members;
-	}
-
-	public void setMembers(Set<User> members) {
-		this.members = members;
 	}
 
 	public Set<User> getAdministrators() {
 		return administrators;
 	}
 
-	public void setAdministrators(Set<User> administrators) {
-		this.administrators = administrators;
-	}
-
 	public Set<Task> getTasks() {
 		return tasks;
-	}
-
-	public void setTasks(Set<Task> tasks) {
-		this.tasks = tasks;
 	}
 
 	public String getProjectName() {
 		return projectName;
 	}
 
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-
 	public String getProjectDescription() {
 		return projectDescription;
-	}
-
-	public void setProjectDescription(String projectDescription) {
-		this.projectDescription = projectDescription;
 	}
 
 }

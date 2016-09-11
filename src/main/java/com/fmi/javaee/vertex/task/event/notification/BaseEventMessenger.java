@@ -54,7 +54,7 @@ public abstract class BaseEventMessenger implements EventMessenger {
 		Mail notification = new Mail();
 		notification.setTo(subscriber.getEmail());
 		notification
-				.setSubject(String.format(TASK_CHANGED_TEMPLATE, refUser.getUsername()));
+				.setSubject(String.format(TASK_CHANGED_TEMPLATE, refUser.getFullName()));
 
 		String mailContent = composeMailContent(subscriber, event);
 		notification.setContent(mailContent);

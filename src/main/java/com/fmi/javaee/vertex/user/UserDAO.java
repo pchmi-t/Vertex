@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface UserDAO {
 	
-	UserEntity getUser(String id);
+	UserEntity getUser(long id);
 	
 	UserEntity getUser(String email, char[] password);
 	

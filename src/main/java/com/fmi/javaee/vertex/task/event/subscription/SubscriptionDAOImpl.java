@@ -10,7 +10,10 @@ import com.fmi.javaee.vertex.task.TaskEntity;
 import com.fmi.javaee.vertex.user.UserEntity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
+@Singleton
 public class SubscriptionDAOImpl implements SubscriptionDAO {
 	
 	private final Provider<EntityManager> entityManagerProvider;
@@ -21,14 +24,14 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
 	}
 
 	@Override
+	@Transactional
 	public void create(SubscriptionEntity subscription) {
 		EntityManager entityManager = entityManagerProvider.get();
-		entityManager.getTransaction().begin();
 		entityManager.persist(subscription);
-		entityManager.getTransaction().commit();
 	}
 
 	@Override
+	@Transactional
 	public boolean isSubscribed(UserEntity user, TaskEntity task) {
 		EntityManager entityManager = entityManagerProvider.get();
 		TypedQuery<SubscriptionEntity> query = entityManager.createNamedQuery(SubscriptionEntity.IS_SUBSCRIBED_QUERY, SubscriptionEntity.class);
@@ -44,6 +47,7 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
 	}
 
 	@Override
+	@Transactional
 	public List<UserEntity> getSubscribers(TaskEntity refTask) {
 		EntityManager entityManager = entityManagerProvider.get();
 		TypedQuery<UserEntity> query = entityManager.createNamedQuery(SubscriptionEntity.GET_SUBSCRIBED_QUERY, UserEntity.class);

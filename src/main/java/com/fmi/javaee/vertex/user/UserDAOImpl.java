@@ -8,7 +8,10 @@ import javax.persistence.TypedQuery;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
+@Singleton
 class UserDAOImpl implements UserDAO {
 
 	private final Provider<EntityManager> entityManagerProvider;
@@ -19,12 +22,14 @@ class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public UserEntity getUser(String id) {
+	@Transactional
+	public UserEntity getUser(long id) {
 		EntityManager entityManager = entityManagerProvider.get();
 		return entityManager.find(UserEntity.class, id);
 	}
 
 	@Override
+	@Transactional
 	public UserEntity getUser(String email, char[] password) {
 		EntityManager entityManager = entityManagerProvider.get();
 		TypedQuery<UserEntity> getByUserNameQuery = entityManager.createNamedQuery(UserEntity.GET_BY_EMAIL_PASS,
@@ -33,13 +38,13 @@ class UserDAOImpl implements UserDAO {
 		getByUserNameQuery.setParameter("password", new String(password));
 		try {
 			return getByUserNameQuery.getSingleResult();
-
 		} catch (NoResultException e) {
 			return null;
 		}
 	}
 
 	@Override
+	@Transactional
 	public List<UserEntity> getUsers(int limit, Integer offset) {
 		EntityManager entityManager = entityManagerProvider.get();
 		return entityManager.createNamedQuery(UserEntity.GET_ALL_USERS, UserEntity.class).setFirstResult(offset)
@@ -47,15 +52,15 @@ class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
+	@Transactional
 	public UserEntity createUser(UserEntity user) {
 		EntityManager entityManager = entityManagerProvider.get();
-		entityManager.getTransaction().begin();
 		entityManager.persist(user);
-		entityManager.getTransaction().commit();
 		return user;
 	}
 
 	@Override
+	@Transactional
 	public UserEntity getUserByEmail(String email) {
 		EntityManager entityManager = entityManagerProvider.get();
 		TypedQuery<UserEntity> getByUserNameQuery = entityManager.createNamedQuery(UserEntity.GET_BY_EMAIL,
@@ -69,6 +74,7 @@ class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
+	@Transactional
 	public UserEntity getUserByUsername(String username) {
 		EntityManager entityManager = entityManagerProvider.get();
 		TypedQuery<UserEntity> getByUserNameQuery = entityManager.createNamedQuery(UserEntity.GET_BY_USERNAME,

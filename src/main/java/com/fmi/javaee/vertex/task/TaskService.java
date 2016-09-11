@@ -46,7 +46,8 @@ public class TaskService {
 	private final EventBus eventBus;
 
 	@Inject
-	public TaskService(TaskDAO taskDAO, UserDAO userDAO, ProjectDAO projectDAO, SubscriptionDAO subscriptionDAO, EventBus eventBus) {
+	public TaskService(TaskDAO taskDAO, UserDAO userDAO, ProjectDAO projectDAO, SubscriptionDAO subscriptionDAO,
+			EventBus eventBus) {
 		this.subscriptionDAO = subscriptionDAO;
 		this.projectDAO = projectDAO;
 		this.taskDAO = taskDAO;
@@ -79,9 +80,8 @@ public class TaskService {
 	@POST
 	@Path("project/{projectId}")
 	public Response createTask(@Context HttpServletRequest request, TaskEntity taskRequest,
-			@PathParam("projectId") String projectId) {
+			@PathParam("projectId") long projectId) {
 		ProjectEntity project = projectDAO.getProject(projectId);
-
 		if (project == null) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
@@ -90,6 +90,7 @@ public class TaskService {
 		if (loggedEmail == null) {
 			return Response.status(HttpServletResponse.SC_UNAUTHORIZED).build();
 		}
+
 		UserEntity creator = userDAO.getUserByEmail(loggedEmail);
 
 		taskRequest.setProject(project);
@@ -97,27 +98,15 @@ public class TaskService {
 		taskRequest.setStatus(TaskStatus.NEW);
 
 		TaskEntity createdTask = taskDAO.createTask(taskRequest);
-		
+		subscribeToTask(creator, createdTask);
+		return Response.ok().entity(new Task(createdTask)).build();
+	}
+
+	private void subscribeToTask(UserEntity creator, TaskEntity createdTask) {
 		SubscriptionEntity subscription = new SubscriptionEntity();
 		subscription.setSubscribedUser(creator);
 		subscription.setSubscriptionTask(createdTask);
 		subscriptionDAO.create(subscription);
-		
-		if (createdTask != null) {
-			return Response.ok().entity(new Task(createdTask)).build();
-		} else {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-	}
-
-	@POST
-	public Response createTask(TaskEntity task) {
-		TaskEntity createdTask = taskDAO.createTask(task);
-		if (createdTask != null) {
-			return Response.ok().entity(new Task(createdTask)).build();
-		} else {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
 	}
 
 	@PUT
@@ -136,6 +125,10 @@ public class TaskService {
 		}
 
 		TaskEntity task = taskDAO.getTaskById(taskId);
+		if (task == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		
 		LOGGER.debug("Creating task assignment event...");
 		String previsousAsignee = task.getAsignee() != null ? task.getAsignee().getEmail() : null;
 
@@ -150,7 +143,8 @@ public class TaskService {
 
 	@PUT
 	@Path("{taskId}/status")
-	public Response changeTaskStatus(@Context HttpServletRequest request, @PathParam("taskId") String taskId, ChangeStatusRequest statusChangeRequest) {
+	public Response changeTaskStatus(@Context HttpServletRequest request, @PathParam("taskId") String taskId,
+			ChangeStatusRequest statusChangeRequest) {
 		String loggedEmail = request.getRemoteUser();
 		if (loggedEmail == null) {
 			LOGGER.error("Failed attempt to retrieve user tasks!");
@@ -159,6 +153,9 @@ public class TaskService {
 		UserEntity refUser = userDAO.getUserByEmail(loggedEmail);
 
 		TaskEntity task = taskDAO.getTaskById(taskId);
+		if (task == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
 		TaskStatus requestedStatus = statusChangeRequest.getStatus();
 
 		createEvent(EventType.STATUS, task.getStatus().name(), requestedStatus.name(), refUser, task);
@@ -169,10 +166,11 @@ public class TaskService {
 
 		return Response.ok(new Task(task)).build();
 	}
-	
+
 	@PUT
 	@Path("{taskId}/priority")
-	public Response changeTaskPriority(@Context HttpServletRequest request, @PathParam("taskId") String taskId, ChangePriorityRequest prioChangeRequest) {
+	public Response changeTaskPriority(@Context HttpServletRequest request, @PathParam("taskId") String taskId,
+			ChangePriorityRequest prioChangeRequest) {
 		String loggedEmail = request.getRemoteUser();
 		if (loggedEmail == null) {
 			LOGGER.error("Failed attempt to retrieve user tasks!");
@@ -181,6 +179,9 @@ public class TaskService {
 		UserEntity refUser = userDAO.getUserByEmail(loggedEmail);
 
 		TaskEntity task = taskDAO.getTaskById(taskId);
+		if (task == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
 		Priority newPriority = prioChangeRequest.getPriority();
 
 		createEvent(EventType.PRIORITY, task.getPriority().name(), newPriority.name(), refUser, task);
@@ -191,7 +192,7 @@ public class TaskService {
 
 		return Response.ok(new Task(task)).build();
 	}
-	
+
 	private void createEvent(EventType type, String before, String after, UserEntity refUser, TaskEntity refTask) {
 		EventEntity event = new EventEntity();
 		event.setBefore(before);

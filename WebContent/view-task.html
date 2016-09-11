@@ -242,7 +242,7 @@
 					showTask(jqXHR);
 				},
 				error : function(jqXHR) {
-					alert('nope')
+					alert('This task could not be loaded.')
 				}
 			});
 		}
@@ -322,7 +322,8 @@
 			}
 			
 			
-			$(".prioChange").click(function() {
+			$(".prioChange").click(function(event) {
+				event.preventDefault();
 				var chosenPrio = $(this).text();
 				var requestData = { "priority": chosenPrio };
 				$.ajax({
@@ -331,6 +332,7 @@
 					contentType: "application/json",
 					data: JSON.stringify(requestData),
 					success : function(jqXHR) {
+						alert("Tast priority was successfully changed. The page will be reloaded.");
 						location.reload();
 					},
 					error : function(jqXHR) {
@@ -359,7 +361,8 @@
 			}
 			
 			
-			$(".statusAction").click(function() {
+			$(".statusAction").click(function(event) {
+				 event.preventDefault();
 				 var actionData = { "Accept": "ACCEPTED", 'Start Progress': "IN_PROGRESS", 'Resolve': "RESOLVED" };
 				 var chosenAction = $(this).text();
 				 var requestData = { "status": actionData[chosenAction] };
@@ -369,6 +372,7 @@
 						contentType: "application/json",
 						data: JSON.stringify(requestData),
 						success : function(jqXHR) {
+							alert("Tast status was successfully changed. The page will be reloaded.");
 							location.reload();
 						},
 						error : function(jqXHR) {

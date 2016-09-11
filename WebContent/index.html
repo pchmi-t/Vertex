@@ -223,7 +223,7 @@
 				var task = tasks[index];
 				
 				if (task.status !== 'RESOLVED') {
-					detailsHtml += '<tr><td>' + task.status + '</td>';
+					detailsHtml += '<tr><td>' + showEnum(task.status) + '</td>';
 					detailsHtml += '<td>' + task.priority + '</td>';
 					detailsHtml += '<td>' + task.taskId + '</td>';
 					detailsHtml += '<td>' + task.title + '</td>';

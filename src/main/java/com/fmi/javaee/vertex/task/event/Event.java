@@ -4,7 +4,6 @@ import java.util.Date;
 
 public class Event {
 
-	private String eventId;
 	private Date timestamp;
 	private String before;
 	private String after;
@@ -12,11 +11,7 @@ public class Event {
 	private String taskId;
 	private String userEmail;
 
-	public Event() {
-	}
-
 	public Event(EventEntity entity) {
-		this.eventId = entity.getEventId();
 		this.timestamp = entity.getTimestamp();
 		this.after = entity.getAfter();
 		this.before = entity.getBefore();
@@ -25,14 +20,6 @@ public class Event {
 		this.userEmail = entity.getRefUser() != null ? entity.getRefUser().getEmail() : null;
 	}
 	
-	public String getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(String eventId) {
-		this.eventId = eventId;
-	}
-
 	public String getTaskId() {
 		return taskId;
 	}

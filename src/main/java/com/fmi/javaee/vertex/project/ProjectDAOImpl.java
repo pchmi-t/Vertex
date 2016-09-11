@@ -10,7 +10,10 @@ import javax.persistence.TypedQuery;
 import com.fmi.javaee.vertex.user.UserEntity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
+@Singleton
 class ProjectDAOImpl implements ProjectDAO {
 	
 	private final Provider<EntityManager> entityManagerProvider;
@@ -21,6 +24,7 @@ class ProjectDAOImpl implements ProjectDAO {
 	}
 
 	@Override
+	@Transactional
 	public List<ProjectEntity> getProjectsOfUser(String userEmail) {
 		EntityManager entityManager = entityManagerProvider.get();
 		TypedQuery<ProjectEntity> getByUserQuery = entityManager.createNamedQuery(ProjectEntity.GET_BY_USER, ProjectEntity.class);
@@ -29,6 +33,7 @@ class ProjectDAOImpl implements ProjectDAO {
 	}
 
 	@Override
+	@Transactional
 	public ProjectEntity createProject(ProjectRequest projectRequest, Set<UserEntity> admins,
 			Set<UserEntity> members) {
 		ProjectEntity newProject = new ProjectEntity();
@@ -39,14 +44,13 @@ class ProjectDAOImpl implements ProjectDAO {
 		newProject.setProjectName(projectRequest.getProjectName());
 		
 		EntityManager entityManager = entityManagerProvider.get();
-		entityManager.getTransaction().begin();
 		entityManager.persist(newProject);
-		entityManager.getTransaction().commit();
 		return newProject;
 	}
 
 	@Override
-	public ProjectEntity getProject(String projectId) {
+	@Transactional
+	public ProjectEntity getProject(long projectId) {
 		EntityManager entityManager = entityManagerProvider.get();
 		return entityManager.find(ProjectEntity.class, projectId);
 	}

@@ -2,7 +2,7 @@ package com.fmi.javaee.vertex.user;
 
 public class User {
 
-	private String userId;
+	private long userId;
 	private String jobTitle;
 	private String username;
 	private String fullName;
@@ -20,14 +20,11 @@ public class User {
 		this.isGod = entity.getIsGod();
 	}
 
-	public User() {
-	}
-
-	public String getUserId() {
+	public long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 

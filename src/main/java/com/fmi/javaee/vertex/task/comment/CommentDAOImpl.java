@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
 @Singleton
 public class CommentDAOImpl implements CommentDAO {
@@ -17,10 +18,9 @@ public class CommentDAOImpl implements CommentDAO {
 	}
 	
 	@Override
+	@Transactional
 	public void save(CommentEntity comment) {
 		EntityManager entityManager = entityManagerProvider.get();
-		entityManager.getTransaction().begin();
 		entityManager.persist(comment);
-		entityManager.getTransaction().commit();
 	}
 }

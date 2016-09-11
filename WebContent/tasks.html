@@ -190,7 +190,7 @@
 			var ongoingTasks = [];
 			for (index = 0; index < tasks.length; index++) {
 				var task = tasks[index];
-				taskhtml += '<tr><td>' + task.status + '</td>';
+				taskhtml += '<tr><td>' + showEnum(task.status) + '</td>';
 				taskhtml += '<td>' + task.priority + '</td>';
 				taskhtml += '<td>' + task.taskId + '</td>';
 				taskhtml += '<td>' + task.title + '</td>';

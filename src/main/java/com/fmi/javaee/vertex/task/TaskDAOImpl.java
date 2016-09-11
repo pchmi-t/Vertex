@@ -9,7 +9,10 @@ import javax.persistence.TypedQuery;
 import com.fmi.javaee.vertex.user.UserEntity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
+@Singleton
 class TaskDAOImpl implements TaskDAO {
 
 	private final Provider<EntityManager> entityManagerProvider;
@@ -20,35 +23,34 @@ class TaskDAOImpl implements TaskDAO {
 	}
 
 	@Override
+	@Transactional
 	public TaskEntity createTask(TaskEntity task) {
 		task.setCreationTime(new Date());
 		task.setModificationTime(task.getCreationTime());
-		task.setLastModificator(task.getCreator());
 		task.setStatus(TaskStatus.NEW);
 
 		EntityManager entityManager = entityManagerProvider.get();
-		entityManager.getTransaction().begin();
 		entityManager.persist(task);
-		entityManager.getTransaction().commit();
 		return task;
 	}
 
 	@Override
+	@Transactional
 	public TaskEntity updateTask(TaskEntity task) {
 		EntityManager entityManager = entityManagerProvider.get();
-		entityManager.getTransaction().begin();
 		TaskEntity updatedTask = entityManager.merge(task);
-		entityManager.getTransaction().commit();
 		return updatedTask;
 	}
 
 	@Override
+	@Transactional
 	public TaskEntity getTaskById(String id) {
 		EntityManager entityManager = entityManagerProvider.get();
 		return entityManager.find(TaskEntity.class, id);
 	}
 
 	@Override
+	@Transactional
 	public List<TaskEntity> getTasksByAssignee(UserEntity asignee) {
 		EntityManager entityManager = entityManagerProvider.get();
 		TypedQuery<TaskEntity> getByAsigneeQuery = entityManager.createNamedQuery(TaskEntity.GET_BY_ASIGNEE,
@@ -58,6 +60,7 @@ class TaskDAOImpl implements TaskDAO {
 	}
 
 	@Override
+	@Transactional
 	public List<TaskEntity> getTasksByCreator(UserEntity creator) {
 		EntityManager entityManager = entityManagerProvider.get();
 		TypedQuery<TaskEntity> getByAsigneeQuery = entityManager.createNamedQuery(TaskEntity.GET_BY_CREATOR,

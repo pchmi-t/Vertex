@@ -1,8 +1,8 @@
 package com.fmi.javaee.vertex.task;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,7 +23,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.NotBlank;
 
 import com.fmi.javaee.vertex.project.ProjectEntity;
 import com.fmi.javaee.vertex.task.comment.CommentEntity;
@@ -41,51 +40,65 @@ public class TaskEntity {
 
 	static final String GET_BY_CREATOR = "getByCreator";
 
+	@Id
+	@GeneratedValue(generator = "sequenceTaskId")
+	@GenericGenerator(name = "sequenceTaskId", strategy = "com.fmi.javaee.vertex.task.TaskIdGenerator")
+	@Column(name = "taskId")
 	private String taskId;
 
+	@Column(name = "creationTime", updatable = false)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationTime;
-	
+
+	@Column(name = "deadline")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date deadline;
 
+	@Column(name = "modificationTime")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date modificationTime;
 
+	@Column(name = "status")
+	@Enumerated(EnumType.STRING)
 	private TaskStatus status;
 
+	@Column(name = "priority")
+	@Enumerated(EnumType.STRING)
 	private Priority priority;
 
+	@ManyToOne
+	@JoinColumn(name = "asigneeId")
 	private UserEntity asignee;
 
+	@Column(name = "definition", length=2000)
 	private String definition;
 
+	@OneToOne
+	@JoinColumn(name = "creatorId")
 	private UserEntity creator;
 
-	private UserEntity lastModificator;
-
+	@Column(name = "title", updatable = false)
 	private String title;
 
+	@JoinColumn(name = "projectId")
+	@ManyToOne(cascade = CascadeType.MERGE)
 	private ProjectEntity project;
 
-	private List<SubscriptionEntity> subscriptions;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "subscriptionTask")
+	private Set<SubscriptionEntity> subscriptions = new HashSet<>();
 
-	private List<CommentEntity> comments;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "commentedTask")
+	private Set<CommentEntity> comments = new HashSet<>();
 
-	@Id
-	@GeneratedValue(generator = "sequence_task_id")
-	@GenericGenerator(name = "sequence_task_id", strategy = "com.fmi.javaee.vertex.task.TaskIdGenerator")
-	@Column(name = "taskId", unique = true, nullable = false)
 	public String getTaskId() {
 		return taskId;
 	}
 
-	@OneToMany
-	public List<CommentEntity> getComments() {
-		if (comments == null ) {
-			comments = new ArrayList<>();
-		}
+	public Set<CommentEntity> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<CommentEntity> comments) {
+	public void setComments(Set<CommentEntity> comments) {
 		this.comments = comments;
 	}
 
@@ -93,8 +106,6 @@ public class TaskEntity {
 		this.taskId = taskId;
 	}
 
-	@Column(name = "creationTime")
-	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreationTime() {
 		return creationTime;
 	}
@@ -102,10 +113,7 @@ public class TaskEntity {
 	public void setCreationTime(Date currentDate) {
 		this.creationTime = currentDate;
 	}
-	
-	
-	@Column(name = "deadline")
-	@Temporal(TemporalType.TIMESTAMP)
+
 	public Date getDeadline() {
 		return deadline;
 	}
@@ -114,8 +122,6 @@ public class TaskEntity {
 		this.deadline = deadline;
 	}
 
-	@Column(name = "modificationTime")
-	@Temporal(TemporalType.TIMESTAMP)
 	public Date getModificationTime() {
 		return modificationTime;
 	}
@@ -124,8 +130,6 @@ public class TaskEntity {
 		this.modificationTime = currentDate;
 	}
 
-	@Column(name = "status")
-	@Enumerated(EnumType.STRING)
 	public TaskStatus getStatus() {
 		return status;
 	}
@@ -134,8 +138,6 @@ public class TaskEntity {
 		this.status = status;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "asignee_id")
 	public UserEntity getAsignee() {
 		return asignee;
 	}
@@ -144,7 +146,6 @@ public class TaskEntity {
 		this.asignee = asignee;
 	}
 
-	@Column(name = "definition")
 	public String getDefinition() {
 		return definition;
 	}
@@ -153,8 +154,6 @@ public class TaskEntity {
 		this.definition = definition;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "creator_id")
 	public UserEntity getCreator() {
 		return creator;
 	}
@@ -163,18 +162,6 @@ public class TaskEntity {
 		this.creator = creator;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "last_modificator_id")
-	public UserEntity getLastModificator() {
-		return lastModificator;
-	}
-
-	public void setLastModificator(UserEntity lastModificator) {
-		this.lastModificator = lastModificator;
-	}
-
-	@Column(name = "priority")
-	@Enumerated(EnumType.STRING)
 	public Priority getPriority() {
 		return priority;
 	}
@@ -183,8 +170,6 @@ public class TaskEntity {
 		this.priority = priority;
 	}
 
-	@Column(name = "title", updatable = false)
-	@NotBlank(message = "The task title can not be null or empty.")
 	public String getTitle() {
 		return title;
 	}
@@ -193,8 +178,6 @@ public class TaskEntity {
 		this.title = title;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "projectId")
 	public ProjectEntity getProject() {
 		return project;
 	}
@@ -203,22 +186,15 @@ public class TaskEntity {
 		this.project = project;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "subscriptionTask")
-	public List<SubscriptionEntity> getSubscriptions() {
-		if (subscriptions == null) {
-			subscriptions = new ArrayList<>();
-		}
+	public Set<SubscriptionEntity> getSubscriptions() {
 		return subscriptions;
 	}
 
-	public void setSubscriptions(List<SubscriptionEntity> subscriptions) {
+	public void setSubscriptions(Set<SubscriptionEntity> subscriptions) {
 		this.subscriptions = subscriptions;
 	}
 
 	public void addComment(CommentEntity commentEntity) {
-		if (comments == null) {
-			comments = new ArrayList<>();
-		}
 		comments.add(commentEntity);
 	}
 

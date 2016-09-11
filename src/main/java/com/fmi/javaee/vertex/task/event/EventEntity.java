@@ -3,10 +3,10 @@ package com.fmi.javaee.vertex.task.event;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -17,8 +17,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import com.fmi.javaee.vertex.task.TaskEntity;
 import com.fmi.javaee.vertex.user.UserEntity;
@@ -31,36 +29,40 @@ public class EventEntity {
 
 	static final String GET_BY_USER = "getEventsByUser";
 
-	private String eventId;
-
-	private Date timestamp;
-
-	private String before;
-
-	private String after;
-
-	private EventType type;
-
-	private TaskEntity refTask;
-
-	private UserEntity refUser;
-
-	private List<UserEntity> subscribers;
-
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(name = "eventId", unique = true, nullable = false)
-	public String getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(String eventId) {
-		this.eventId = eventId;
-	}
+	@GeneratedValue
+	@Column(name = "eventId")
+	private long eventId;
 
 	@Column(name = "timestamp")
 	@Temporal(TemporalType.TIMESTAMP)
+	private Date timestamp;
+
+	@Column(name = "before")
+	private String before;
+
+	@Column(name = "after")
+	private String after;
+
+	@Column(name = "eventType")
+	@Enumerated(EnumType.STRING)
+	private EventType type;
+
+	@JoinColumn(name = "taskId")
+	@OneToOne
+	private TaskEntity refTask;
+
+	@OneToOne
+	@JoinColumn(name = "userId")
+	private UserEntity refUser;
+
+	@ManyToMany
+	private List<UserEntity> subscribers;
+
+	public long getEventId() {
+		return eventId;
+	}
+
 	public Date getTimestamp() {
 		return timestamp;
 	}
@@ -69,8 +71,6 @@ public class EventEntity {
 		this.timestamp = timestamp;
 	}
 
-	@JoinColumn(name = "task_id")
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	public TaskEntity getRefTask() {
 		return refTask;
 	}
@@ -79,8 +79,6 @@ public class EventEntity {
 		this.refTask = refTask;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_id")
 	public UserEntity getRefUser() {
 		return refUser;
 	}
@@ -89,7 +87,6 @@ public class EventEntity {
 		this.refUser = refUser;
 	}
 
-	@Column(name = "before")
 	public String getBefore() {
 		return before;
 	}
@@ -98,7 +95,6 @@ public class EventEntity {
 		this.before = before;
 	}
 
-	@Column(name = "after")
 	public String getAfter() {
 		return after;
 	}
@@ -107,7 +103,6 @@ public class EventEntity {
 		this.after = after;
 	}
 
-	@Column(name = "eventType")
 	public EventType getType() {
 		return type;
 	}
@@ -116,7 +111,6 @@ public class EventEntity {
 		this.type = type;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY)
 	public List<UserEntity> getSubscribers() {
 		return subscribers;
 	}

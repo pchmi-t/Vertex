@@ -13,6 +13,10 @@ function getEvents() {
 	});
 }
 
+function showEnum(x) {
+	return x.split('_').map(function(x){ return x.toUpperCase() }).join(" ")
+}
+
 function isUserGod() {
 	var isGod = false;
 	$.ajax({
