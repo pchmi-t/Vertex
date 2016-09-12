@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
+import com.fmi.javaee.vertex.security.VertexEncryptor;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -35,7 +36,13 @@ class UserDAOImpl implements UserDAO {
 		TypedQuery<UserEntity> getByUserNameQuery = entityManager.createNamedQuery(UserEntity.GET_BY_EMAIL_PASS,
 				UserEntity.class);
 		getByUserNameQuery.setParameter("email", email);
-		getByUserNameQuery.setParameter("password", new String(password));
+		String encryptedPassword = null;
+		try {
+			encryptedPassword = VertexEncryptor.encrypt(new String(password));
+		} catch (Exception e1) {
+			return null;
+		}
+		getByUserNameQuery.setParameter("password", encryptedPassword);
 		try {
 			return getByUserNameQuery.getSingleResult();
 		} catch (NoResultException e) {
@@ -55,6 +62,11 @@ class UserDAOImpl implements UserDAO {
 	@Transactional
 	public UserEntity createUser(UserEntity user) {
 		EntityManager entityManager = entityManagerProvider.get();
+		try {
+			user.setPassword(VertexEncryptor.encrypt(user.getPassword()));
+		} catch (Exception e) {
+			return null;
+		}
 		entityManager.persist(user);
 		return user;
 	}
